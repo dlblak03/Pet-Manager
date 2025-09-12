@@ -1,12 +1,9 @@
 import type { Handle } from '@sveltejs/kit';
 import { sequence } from '@sveltejs/kit/hooks';
-import { PRIVATE_WEBSITE_AUTH_USER, PRIVATE_WEBSITE_AUTH_PASSWORD } from '$env/static/private'
+import { env } from '$env/dynamic/private';
 
 const passwordProtectSite: Handle = async ({ event, resolve }) => {
     const auth = event.request.headers.get('authorization');
-
-    const user = PRIVATE_WEBSITE_AUTH_USER;
-    const pass = PRIVATE_WEBSITE_AUTH_PASSWORD;
 
     if (!auth || !auth.startsWith('Basic ')) {
         return new Response('Authentication required', {
@@ -19,7 +16,7 @@ const passwordProtectSite: Handle = async ({ event, resolve }) => {
         const base64Credentials = auth.split(' ')[1];
         const [username, password] = atob(base64Credentials).split(':');
 
-        if (username !== user || password !== pass) {
+        if (username !== env.PRIVATE_WEBSITE_AUTH_USER || password !== env.PRIVATE_WEBSITE_AUTH_PASSWORD) {
             return new Response('Unauthorized', { status: 401 });
         }
     } catch (error) {
