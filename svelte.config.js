@@ -13,7 +13,7 @@ const config = {
 			mode: 'hash',
 			directives: {
 				'default-src': ["'none'"],
-				'script-src': ["'self'"],
+				'script-src': ["'self'", "'sha256-94WxU203ItVdYeuHa4UBPQzWANAxvaHV/BgTnRrE/14='", "'sha256-uQ+6xeJ5jfvD5SmN5W7ZFR4dF9DbDwscZWrWOLfV+RM='"],
 				'style-src': ["'self'", "'unsafe-inline'"],
 				'img-src': [
 					"'self'",
@@ -21,7 +21,7 @@ const config = {
 					'blob:'
 				],
 				'font-src': ["'self'"],
-				'connect-src': ["'self'"],
+				'connect-src': ["'self'", "https://jjpqfmlhugguosbjadxr.supabase.co/auth/v1/user"],
 				'frame-ancestors': ["'none'"],
 				'base-uri': ["'self'"],
 				'form-action': ["'self'"]

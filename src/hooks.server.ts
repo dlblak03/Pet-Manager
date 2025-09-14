@@ -5,24 +5,26 @@ import { createServerClient } from '@supabase/ssr'
 import type { CookieSerializeOptions } from 'cookie'
 
 const passwordProtectSite: Handle = async ({ event, resolve }) => {
-	const auth = event.request.headers.get('authorization');
+	if (!event.url.host.startsWith('localhost')) {
+		const auth = event.request.headers.get('authorization');
 
-	if (!auth || !auth.startsWith('Basic ')) {
-		return new Response('Authentication required', {
-			status: 401,
-			headers: { 'WWW-Authenticate': 'Basic realm="Secure Area"' }
-		});
-	}
-
-	try {
-		const base64Credentials = auth.split(' ')[1];
-		const [username, password] = atob(base64Credentials).split(':');
-
-		if (username !== env.PRIVATE_WEBSITE_AUTH_USER || password !== env.PRIVATE_WEBSITE_AUTH_PASSWORD) {
-			return new Response('Unauthorized', { status: 401 });
+		if (!auth || !auth.startsWith('Basic ')) {
+			return new Response('Authentication required', {
+				status: 401,
+				headers: { 'WWW-Authenticate': 'Basic realm="Secure Area"' }
+			});
 		}
-	} catch (error) {
-		return new Response('Invalid credentials format', { status: 401 });
+
+		try {
+			const base64Credentials = auth.split(' ')[1];
+			const [username, password] = atob(base64Credentials).split(':');
+
+			if (username !== env.PRIVATE_WEBSITE_AUTH_USER || password !== env.PRIVATE_WEBSITE_AUTH_PASSWORD) {
+				return new Response('Unauthorized', { status: 401 });
+			}
+		} catch (error) {
+			return new Response('Invalid credentials format', { status: 401 });
+		}
 	}
 
 	return resolve(event);
@@ -64,10 +66,10 @@ const supabase: Handle = async ({ event, resolve }) => {
 	})
 }
 
-const rootRedirect: Handle = async ({event, resolve }) => {
+const rootRedirect: Handle = async ({ event, resolve }) => {
 	if (event.url.pathname === '/') {
-        throw redirect(302, '/sign-in')
-    }
+		throw redirect(302, '/sign-in')
+	}
 
 	return resolve(event)
 }

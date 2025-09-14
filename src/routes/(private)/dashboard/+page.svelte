@@ -3,3 +3,7 @@
 
     let { data }: PageProps = $props();
 </script>
+
+<svelte:head>
+    <title>Pet Manager | Dashboard</title>
+</svelte:head>

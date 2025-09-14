@@ -33,10 +33,9 @@
 	<form method="POST" action="?/signin" use:enhance>
 		<div class="flex flex-col gap-6">
 			<div class="flex flex-col items-center gap-4">
-				<a href="##" class="flex flex-col items-center gap-2 font-medium">
-					<div class="flex size-8 items-center justify-center rounded-md text-4xl">🐶</div>
-					<span class="sr-only">Pet Manager</span>
-				</a>
+				<div class="flex flex-col items-center gap-2 font-medium">
+					<div class="flex size-8 items-center justify-center rounded-md text-5xl">🐶</div>
+				</div>
 				<h1 class="text-xl font-bold">Welcome to Pet Manager</h1>
 				<!-- <div class="text-center text-sm">
 					Don&apos;t have an account?
