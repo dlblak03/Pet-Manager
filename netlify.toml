@@ -1,3 +1,6 @@
 [build]
   command = "npm run build"
   publish = "build"
+
+[build.environment]
+  SECRETS_SCAN_OMIT_KEYS = "PRIVATE_SUPABASE_URL,PRIVATE_SUPABASE_PUBLISHABLE_KEY"
