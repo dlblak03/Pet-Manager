@@ -36,7 +36,7 @@
 				<div class="flex flex-col items-center gap-2 font-medium">
 					<div class="flex size-8 items-center justify-center rounded-md text-5xl">🐶</div>
 				</div>
-				<h1 class="text-xl font-bold">Welcome to Pet Manager</h1>
+				<h1 class="text-xl font-bold">Sign in to Pet Manager</h1>
 				<!-- <div class="text-center text-sm">
 					Don&apos;t have an account?
 					<a href="##" class="underline underline-offset-4"> Sign up </a>

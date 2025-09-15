@@ -32,6 +32,9 @@ const passwordProtectSite: Handle = async ({ event, resolve }) => {
 
 const supabase: Handle = async ({ event, resolve }) => {
 	event.locals.supabase = createServerClient(env.PRIVATE_SUPABASE_URL, env.PRIVATE_SUPABASE_PUBLISHABLE_KEY, {
+		db: {
+			schema: 'pets'
+		},
 		cookies: {
 			getAll: () => event.cookies.getAll(),
 			setAll: (cookiesToSet: { name: string, value: string, options: CookieSerializeOptions }[]) => {

@@ -5,7 +5,7 @@ declare global {
 	namespace App {
 		// interface Error {}
 		interface Locals {
-			supabase: SupabaseClient<Database>,
+			supabase: SupabaseClient<Database, string, string>,
 			safeGetSession: () => Promise<{ session: Session | null; user: User | null }>,
 			session: Session | null
 			user: User | null

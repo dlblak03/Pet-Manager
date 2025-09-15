@@ -6,20 +6,26 @@ export const load: LayoutLoad = async ({ data, depends, fetch }) => {
 
   const supabase = isBrowser()
     ? createBrowserClient(data.supabaseUrl, data.supabaseKey, {
-        global: {
-          fetch,
-        },
-      })
+      db: {
+        schema: 'pets'
+      },
+      global: {
+        fetch,
+      },
+    })
     : createServerClient(data.supabaseUrl, data.supabaseKey, {
-        global: {
-          fetch,
+      db: {
+        schema: 'pets'
+      },
+      global: {
+        fetch,
+      },
+      cookies: {
+        getAll() {
+          return data.cookies
         },
-        cookies: {
-          getAll() {
-            return data.cookies
-          },
-        },
-      })
+      },
+    })
 
   const {
     data: { session },
