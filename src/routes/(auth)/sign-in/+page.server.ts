@@ -16,7 +16,14 @@ export const actions: Actions = {
             console.error(error)
             redirect(303, '/error')
         } else {
-            redirect(303, `/welcome?email=${encodeURIComponent(email)}`)
+            cookies.set('email', email, {
+                sameSite: true,
+                secure: true,
+                httpOnly: true,
+                path: '/',
+                maxAge: 3600000
+            })
+            redirect(303, '/welcome')
         }
     },
 }

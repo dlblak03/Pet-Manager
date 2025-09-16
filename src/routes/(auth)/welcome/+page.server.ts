@@ -1,9 +1,12 @@
+import { redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 
-export const load = (async ({ url }) => {
-    const email = url.searchParams.get('email')
+export const load = (async ({ cookies }) => {
+    const email = cookies.get('email')
 
-    url.searchParams.delete('email')
+    if (!email) {
+        throw redirect(303, '/sign-in')
+    }
 
     return {
         email
