@@ -5,8 +5,6 @@
 
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { buttonVariants } from '$lib/components/ui/button/index.js';
-	import { Input } from '$lib/components/ui/input/index.js';
-	import { Label } from '$lib/components/ui/label/index.js';
 	import { Separator } from '$lib/components/ui/separator/index.js';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
 	import * as Sheet from '$lib/components/ui/sheet/index.js';
@@ -20,8 +18,6 @@
 	import Calendar from '@lucide/svelte/icons/calendar';
 	import HeartPulse from '@lucide/svelte/icons/heart-pulse';
 	import LogOut from '@lucide/svelte/icons/log-out';
-	import ChevronLeft from '@lucide/svelte/icons/chevron-left';
-	import ChevronRight from '@lucide/svelte/icons/chevron-right';
 
 	let { data, children }: LayoutProps = $props();
 	let { pathName, headerTitle } = $derived(data);
@@ -52,7 +48,7 @@
 		if (addVaccinationSheet) {
 			return HeartPulse;
 		}
-	}
+	};
 
 	const getSheetTitle = () => {
 		if (addPetSheet) {
@@ -111,12 +107,20 @@
 					decorative={true}
 					class="mx-2 data-[orientation=vertical]:h-6"
 				/>
-				<h1 class="text-base font-medium">{headerTitle}</h1>
+				<h1 class="text-base font-medium flex items-center gap-2">
+					{#if headerTitle == 'My Pets'}
+						<PawPrint size={12} />
+					{/if}
+					{#if headerTitle == 'My Account'}
+						<User size={12} />
+					{/if}
+					{headerTitle}
+				</h1>
 				<div class="ml-auto flex items-center gap-2">
 					<DropdownMenu.Root>
 						<DropdownMenu.Trigger>
 							{#snippet child({ props })}
-								<Button {...props}>
+								<Button class="cursor-pointer" {...props}>
 									<PlusIcon />
 									Add
 									<span class="sr-only">Add item</span>
@@ -128,6 +132,7 @@
 							<DropdownMenu.Separator />
 							<DropdownMenu.Group>
 								<DropdownMenu.Item
+									class="cursor-pointer p-2"
 									onSelect={() => {
 										resetSheets();
 										addPetSheet = true;
@@ -137,6 +142,7 @@
 							</DropdownMenu.Group>
 							<DropdownMenu.Group>
 								<DropdownMenu.Item
+									class="cursor-pointer p-2"
 									onSelect={() => {
 										resetSheets();
 										addAppointmentSheet = true;
@@ -148,6 +154,7 @@
 								<DropdownMenu.SubTrigger><HeartPulse />Medical</DropdownMenu.SubTrigger>
 								<DropdownMenu.SubContent>
 									<DropdownMenu.Item
+										class="cursor-pointer p-2"
 										onSelect={() => {
 											resetSheets();
 											addMedicalRecordsSheet = true;
@@ -155,6 +162,7 @@
 										}}>Medical Record</DropdownMenu.Item
 									>
 									<DropdownMenu.Item
+										class="cursor-pointer p-2"
 										onSelect={() => {
 											resetSheets();
 											addVaccinationSheet = true;
@@ -172,7 +180,7 @@
 						class="mx-2 data-[orientation=vertical]:h-6"
 					/>
 
-					<Button onclick={toggleMode} variant="outline" size="icon">
+					<Button onclick={toggleMode} class="cursor-pointer" variant="outline" size="icon">
 						<SunIcon
 							class="h-[1.2rem] w-[1.2rem] scale-100 rotate-0 !transition-all dark:scale-0 dark:-rotate-90"
 						/>
@@ -190,19 +198,22 @@
 					<DropdownMenu.Root>
 						<DropdownMenu.Trigger>
 							{#snippet child({ props })}
-								<Button {...props} variant="outline" size="icon">
+								<Button class="cursor-pointer" {...props} variant="outline" size="icon">
 									<User />
 								</Button>
 							{/snippet}
 						</DropdownMenu.Trigger>
 						<DropdownMenu.Content class="w-56" align="end">
 							<DropdownMenu.Group>
-								<DropdownMenu.Item>
-									<a href="/me" class="flex h-full w-full items-center gap-2"><User />My Account</a>
+								<DropdownMenu.Item class="p-0">
+									<a href="/me" class="flex h-full w-full items-center gap-2 p-2"
+										><User />My Account</a
+									>
 								</DropdownMenu.Item>
 							</DropdownMenu.Group>
 							<DropdownMenu.Separator />
 							<DropdownMenu.Item
+								class="p-0"
 								onSelect={() => {
 									window.location.href = '/sign-out';
 								}}
@@ -210,7 +221,7 @@
 								<a
 									href="/sign-out"
 									data-sveltekit-preload-data="off"
-									class="flex h-full w-full items-center gap-2"><LogOut />Sign out</a
+									class="flex h-full w-full items-center gap-2 p-2"><LogOut />Sign out</a
 								>
 							</DropdownMenu.Item>
 						</DropdownMenu.Content>
@@ -248,9 +259,9 @@
 		<div class="grid flex-1 auto-rows-min gap-6 p-4"></div>
 		<Separator />
 		<Sheet.Footer class={'flex-row justify-end'}>
-			<Sheet.Close class={buttonVariants({ variant: 'outline' })}>Cancel</Sheet.Close>
+			<Sheet.Close class={'cursor-pointer ' + buttonVariants({ variant: 'outline' })}>Cancel</Sheet.Close>
 			<Button
-				class={"inline-flex h-9 shrink-0 items-center justify-center gap-2 rounded-md border border-green-600/50 bg-green-500/50 px-4 py-2 text-sm font-medium whitespace-nowrap shadow-xs transition-all outline-none hover:bg-green-600/50 text-accent-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 has-[>svg]:px-3 aria-disabled:pointer-events-none aria-disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:w-auto dark:border-green-600/50 dark:bg-green-500/50 dark:hover:bg-green-600/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"}
+				class={"inline-flex h-9 shrink-0 cursor-pointer items-center justify-center gap-2 rounded-md border border-green-600/50 bg-green-500/50 px-4 py-2 text-sm font-medium whitespace-nowrap text-accent-foreground shadow-xs transition-all outline-none hover:bg-green-600/50 focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 has-[>svg]:px-3 aria-disabled:pointer-events-none aria-disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:w-auto dark:border-green-600/50 dark:bg-green-500/50 dark:hover:bg-green-600/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"}
 				>Save</Button
 			>
 		</Sheet.Footer>
