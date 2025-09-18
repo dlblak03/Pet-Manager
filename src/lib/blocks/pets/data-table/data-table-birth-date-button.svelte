@@ -8,7 +8,7 @@
 	let { variant = 'ghost', ...restProps }: ComponentProps<typeof Button> = $props();
 </script>
 
-<Button class="hover:bg-zinc-200/50 dark:hover:bg-zinc-700" {variant} {...restProps}>
+<Button class="hover:bg-primary dark:hover:bg-primary hover:text-white cursor-pointer" {variant} {...restProps}>
 	Birth Date
 	<ArrowUpDownIcon class="ml-2" />
 </Button>

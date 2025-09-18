@@ -221,9 +221,10 @@
 				<Table.Root>
 					<Table.Header>
 						{#each table.getHeaderGroups() as headerGroup (headerGroup.id)}
-							<Table.Row class="bg-zinc-50 dark:bg-zinc-800">
-								{#each headerGroup.headers as header (header.id)}
-									<Table.Head colspan={header.colSpan}>
+							<Table.Row class="bg-primary/25 dark:bg-primary/50">
+								{#each headerGroup.headers as header, index (header.id)}
+									<!-- svelte-ignore attribute_quoted -->
+									<Table.Head class="{index == 0 ? 'rounded-tl-sm' : index == headerGroup.headers.length - 1 ? 'rounded-tr-sm' : ''}" colspan={header.colSpan}>
 										{#if !header.isPlaceholder}
 											<FlexRender
 												content={header.column.columnDef.header}
@@ -237,7 +238,7 @@
 					</Table.Header>
 					<Table.Body>
 						{#each table.getRowModel().rows as row (row.id)}
-							<Table.Row data-state={row.getIsSelected() && 'selected'}>
+							<Table.Row data-state={row.getIsSelected() && 'selected'} class="hover:[&,&>svelte-css-wrapper]:[&>th,td]:bg-primary/5">
 								{#each row.getVisibleCells() as cell (cell.id)}
 									<Table.Cell>
 										<FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />

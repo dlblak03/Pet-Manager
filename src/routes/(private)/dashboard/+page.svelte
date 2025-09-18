@@ -1,5 +1,4 @@
 <script lang="ts">
-	import type { PageProps } from './$types';
 	import { onMount } from 'svelte';
 	import { dndzone, SHADOW_ITEM_MARKER_PROPERTY_NAME } from 'svelte-dnd-action';
 

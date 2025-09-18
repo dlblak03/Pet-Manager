@@ -23,12 +23,14 @@ export const columns: ColumnDef<Pet>[] = [
                     !table.getIsAllPageRowsSelected(),
                 onCheckedChange: (value) => table.toggleAllPageRowsSelected(!!value),
                 "aria-label": "Select all",
+                class: 'border-foreground/50'
             }),
         cell: ({ row }) =>
             renderComponent(Checkbox, {
                 checked: row.getIsSelected(),
                 onCheckedChange: (value) => row.toggleSelected(!!value),
                 "aria-label": "Select row",
+                class: 'border-foreground/50'
             }),
         enableSorting: false,
         enableHiding: false,

@@ -18,7 +18,8 @@ const config = {
 				'img-src': [
 					"'self'",
 					'data:',
-					'blob:'
+					'blob:',
+					'https://jjpqfmlhugguosbjadxr.supabase.co'
 				],
 				'font-src': ["'self'"],
 				'connect-src': ["'self'", "https://jjpqfmlhugguosbjadxr.supabase.co/auth/v1/user"],

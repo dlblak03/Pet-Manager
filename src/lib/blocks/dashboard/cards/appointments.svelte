@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { getLocalTimeZone, today, isWeekend } from '@internationalized/date';
+	import { getLocalTimeZone, today } from '@internationalized/date';
 
 	import * as Card from '$lib/components/ui/card/index.js';
 
@@ -25,8 +25,6 @@
 	onMount(async () => {
 		try {
 			appointmentsData = await fetch('/api/dashboard/appointments').then((r) => r.json());
-
-			console.log(appointmentsData);
 		} finally {
 			appointmentsLoading = false;
 		}
@@ -54,7 +52,6 @@
 				{#snippet day({ day })}
 					{@const dayOfAppointment = appointmentsData.find((a) => {
 						const appointmentDate = new Date(a.appointment_date);
-						console.log(day.month);
 						return (
 							appointmentDate.getDate() == day.day &&
 							appointmentDate.getMonth() + 1 == day.month &&
@@ -66,7 +63,6 @@
 						{#if dayOfAppointment}
 							{@const dayIsToday = appointmentsData.find((a) => {
 								const appointmentDate = new Date(a.appointment_date);
-								console.log(day.month);
 								return (
 									appointmentDate.getDate() == value.day &&
 									appointmentDate.getMonth() + 1 == day.month &&
