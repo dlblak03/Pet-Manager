@@ -257,7 +257,7 @@
 			<div class="flex items-center justify-between space-x-2 py-4">
 				<div class="flex-1 text-sm text-muted-foreground">
 					{table.getFilteredSelectedRowModel().rows.length} of{' '}
-					{table.getFilteredRowModel().rows.length} row(s) selected.
+					{table.getFilteredRowModel().rows.length} row(s) selected
 				</div>
 
 				<Button

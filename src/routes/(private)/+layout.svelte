@@ -35,21 +35,6 @@
 		addVaccinationSheet = false;
 	};
 
-	const getSheetIcon = () => {
-		if (addPetSheet) {
-			return PawPrint;
-		}
-		if (addAppointmentSheet) {
-			return Calendar;
-		}
-		if (addMedicalRecordsSheet) {
-			return HeartPulse;
-		}
-		if (addVaccinationSheet) {
-			return HeartPulse;
-		}
-	};
-
 	const getSheetTitle = () => {
 		if (addPetSheet) {
 			return 'Add Pet';
@@ -107,7 +92,7 @@
 					decorative={true}
 					class="mx-2 data-[orientation=vertical]:h-6"
 				/>
-				<h1 class="text-base font-medium flex items-center gap-2">
+				<h1 class="flex items-center gap-2 text-base font-medium">
 					{#if headerTitle == 'My Pets'}
 						<PawPrint size={12} />
 					{/if}
@@ -120,7 +105,10 @@
 					<DropdownMenu.Root>
 						<DropdownMenu.Trigger>
 							{#snippet child({ props })}
-								<Button class="cursor-pointer" {...props}>
+								<Button
+									class="cursor-pointer border border-green-600/50 bg-green-500/50 text-card-foreground hover:bg-green-600/50 dark:bg-green-400/25 dark:hover:bg-green-600/50"
+									{...props}
+								>
 									<PlusIcon />
 									Add
 									<span class="sr-only">Add item</span>
@@ -237,7 +225,7 @@
 </div>
 
 <Sheet.Root bind:open={addSheet}>
-	<Sheet.Content side="right" class={'min-w-[500px] gap-0 [&>button:last-child]:hidden'}>
+	<Sheet.Content side="right" class={'min-w-[350px] gap-0 [&>button:last-child]:hidden'}>
 		<Sheet.Header>
 			<Sheet.Title class="flex items-center gap-2">
 				{#if addPetSheet}
@@ -259,9 +247,11 @@
 		<div class="grid flex-1 auto-rows-min gap-6 p-4"></div>
 		<Separator />
 		<Sheet.Footer class={'flex-row justify-end'}>
-			<Sheet.Close class={'cursor-pointer ' + buttonVariants({ variant: 'outline' })}>Cancel</Sheet.Close>
+			<Sheet.Close class={'cursor-pointer ' + buttonVariants({ variant: 'outline' })}
+				>Cancel</Sheet.Close
+			>
 			<Button
-				class={"inline-flex h-9 shrink-0 cursor-pointer items-center justify-center gap-2 rounded-md border border-green-600/50 bg-green-500/50 px-4 py-2 text-sm font-medium whitespace-nowrap text-accent-foreground shadow-xs transition-all outline-none hover:bg-green-600/50 focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 has-[>svg]:px-3 aria-disabled:pointer-events-none aria-disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:w-auto dark:border-green-600/50 dark:bg-green-500/50 dark:hover:bg-green-600/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"}
+				class={"inline-flex h-9 shrink-0 cursor-pointer items-center justify-center gap-2 rounded-md border border-green-600/50 bg-green-500/50 px-4 py-2 text-sm font-medium whitespace-nowrap text-accent-foreground shadow-xs transition-all outline-none hover:bg-green-600/50 focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 has-[>svg]:px-3 aria-disabled:pointer-events-none aria-disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:w-auto dark:border-green-600/50 dark:bg-green-400/25 dark:hover:bg-green-600/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"}
 				>Save</Button
 			>
 		</Sheet.Footer>

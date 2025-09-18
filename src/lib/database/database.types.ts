@@ -14,6 +14,48 @@ export type Database = {
   }
   pets: {
     Tables: {
+      activity_feed: {
+        Row: {
+          activity_description: string
+          activity_type: string
+          appointment_type: string | null
+          created_at: string
+          id: string
+          medical_record_type: string | null
+          owner_id: string
+          pet_breed: string | null
+          pet_name: string | null
+          pet_species: string | null
+          vaccination_name: string | null
+        }
+        Insert: {
+          activity_description: string
+          activity_type: string
+          appointment_type?: string | null
+          created_at?: string
+          id?: string
+          medical_record_type?: string | null
+          owner_id?: string
+          pet_breed?: string | null
+          pet_name?: string | null
+          pet_species?: string | null
+          vaccination_name?: string | null
+        }
+        Update: {
+          activity_description?: string
+          activity_type?: string
+          appointment_type?: string | null
+          created_at?: string
+          id?: string
+          medical_record_type?: string | null
+          owner_id?: string
+          pet_breed?: string | null
+          pet_name?: string | null
+          pet_species?: string | null
+          vaccination_name?: string | null
+        }
+        Relationships: []
+      }
       appointments: {
         Row: {
           appointment_date: string
@@ -334,7 +376,7 @@ export type Database = {
           microchip_id?: string | null
           name: string
           owner_email?: string | null
-          owner_id: string
+          owner_id?: string
           owner_name?: string | null
           owner_phone?: string | null
           species: string
