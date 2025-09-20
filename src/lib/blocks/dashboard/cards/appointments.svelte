@@ -16,11 +16,13 @@
 	import CalendarIcon from '@lucide/svelte/icons/calendar';
 	import Clock from '@lucide/svelte/icons/clock';
 	import CircleCheckBig from '@lucide/svelte/icons/circle-check-big';
+	import { Separator } from '$lib/components/ui/separator';
 
 	let appointmentsData: Appointments[] = $state([]);
 	let appointmentsLoading: boolean = $state(true);
 
 	let value = today(getLocalTimeZone());
+	let yesterday = today(getLocalTimeZone()).subtract({ days: 1 });
 
 	onMount(async () => {
 		try {
@@ -32,10 +34,11 @@
 </script>
 
 <Card.Root>
-	<Card.Header>
+	<Card.Header class="cursor-grab active:cursor-grabbing">
 		<Card.Title class="flex items-center gap-2"><CalendarIcon size={12} />Appointments</Card.Title>
 	</Card.Header>
-	<Card.Content class="relative flex flex-col gap-2">
+	<Separator />
+	<Card.Content class="relative flex flex-col gap-2 cursor-default">
 		{#if appointmentsLoading}
 			<div class="flex flex-col gap-2">
 				<Skeleton class="h-[20px] w-full rounded-lg" />
@@ -65,12 +68,14 @@
 								const appointmentDate = new Date(a.appointment_date);
 								return (
 									appointmentDate.getDate() == value.day &&
-									appointmentDate.getMonth() + 1 == day.month &&
-									appointmentDate.getFullYear() == day.year
+									appointmentDate.getMonth() + 1 == value.month &&
+									appointmentDate.getFullYear() == value.year
 								);
 							})}
 							<div
-								class="h-1.5 w-1.5 rounded-full border {dayIsToday ? 'border-white/50 bg-white/50 dark:bg-white/25' : 'border-orange-600/50 bg-orange-500/50 dark:bg-orange-400/25'}"
+								class="h-1.5 w-1.5 rounded-full border {dayIsToday
+									? 'border-white/50 bg-white/50 dark:bg-white/25'
+									: 'border-orange-600/50 bg-orange-500/50 dark:bg-orange-400/25'}"
 							></div>
 						{/if}
 					</CalendarDay>
@@ -81,6 +86,14 @@
 			</div>
 			{#if appointmentsData.length > 0}
 				{#each appointmentsData as appointment}
+					{@const dayIsToday =
+						new Date(appointment.appointment_date).getDate() == value.day &&
+						new Date(appointment.appointment_date).getMonth() + 1 == value.month &&
+						new Date(appointment.appointment_date).getFullYear() == value.year}
+					{@const dayIsYesterday =
+						new Date(appointment.appointment_date).getDate() == yesterday.day &&
+						new Date(appointment.appointment_date).getMonth() + 1 == yesterday.month &&
+						new Date(appointment.appointment_date).getFullYear() == yesterday.year}
 					<div
 						class="flex cursor-default flex-row gap-4 rounded-lg p-2 transition-all duration-150 hover:bg-input/50"
 					>
@@ -111,14 +124,18 @@
 						<!-- date -->
 						<div class="ml-auto flex flex-col gap-2">
 							<p class="text-sm text-muted-foreground">
-								{new Date(appointment.appointment_date).toLocaleDateString(
-									navigator.language || 'en-US',
-									{
-										month: 'short',
-										day: 'numeric',
-										year: '2-digit'
-									}
-								)}
+								{dayIsToday
+									? 'Today'
+									: dayIsYesterday
+										? 'Yesterday'
+										: new Date(appointment.appointment_date).toLocaleDateString(
+												navigator.language || 'en-US',
+												{
+													month: 'short',
+													day: 'numeric',
+													year: '2-digit'
+												}
+											)}
 							</p>
 						</div>
 					</div>

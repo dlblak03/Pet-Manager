@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { getLocalTimeZone, today } from '@internationalized/date';
 
 	import type { Database } from '$lib/database/database.types';
 
@@ -11,10 +12,14 @@
 
 	import Activity from '@lucide/svelte/icons/activity';
 	import Paw from '@lucide/svelte/icons/paw-print';
-    import Calendar from '@lucide/svelte/icons/calendar';
+	import Calendar from '@lucide/svelte/icons/calendar';
+	import { Separator } from '$lib/components/ui/separator';
 
 	let activityFeedData: Activity[] = $state([]);
 	let activityFeedLoading: boolean = $state(true);
+
+	let value = today(getLocalTimeZone());
+	let yesterday = today(getLocalTimeZone()).subtract({ days: 1 });
 
 	onMount(async () => {
 		try {
@@ -29,7 +34,8 @@
 	<Card.Header class="cursor-grab active:cursor-grabbing">
 		<Card.Title class="flex items-center gap-2"><Activity size={12} />Activity Feed</Card.Title>
 	</Card.Header>
-	<Card.Content class="flex flex-col gap-2">
+	<Separator />
+	<Card.Content class="flex flex-col gap-2 cursor-default">
 		{#if activityFeedLoading}
 			<div class="flex flex-col gap-2">
 				<Skeleton class="h-[20px] w-full rounded-lg" />
@@ -37,6 +43,14 @@
 			</div>
 		{:else}
 			{#each activityFeedData as activity}
+				{@const dayIsToday =
+					new Date(activity.created_at).getDate() == value.day &&
+					new Date(activity.created_at).getMonth() + 1 == value.month &&
+					new Date(activity.created_at).getFullYear() == value.year}
+				{@const dayIsYesterday =
+					new Date(activity.created_at).getDate() == yesterday.day &&
+					new Date(activity.created_at).getMonth() + 1 == yesterday.month &&
+					new Date(activity.created_at).getFullYear() == yesterday.year}
 				<div
 					class="flex cursor-default flex-row gap-4 rounded-lg p-2 transition-all duration-150 hover:bg-input/50"
 				>
@@ -48,7 +62,7 @@
 							<Paw size={14} />
 						</div>
 					{/if}
-                    {#if activity.activity_type == 'appointment_added'}
+					{#if activity.activity_type == 'appointment_added'}
 						<div
 							class="flex h-14 w-14 items-center justify-center rounded-lg border border-indigo-600/50 bg-indigo-500/50 dark:bg-indigo-400/25"
 						>
@@ -65,8 +79,10 @@
 								{activity.pet_breed ? '(' + activity.pet_breed + ')' : ''} added
 							</p>
 						{/if}
-                        {#if activity.activity_type == 'appointment_added'}
-							<p class="text-base font-medium">New Appointment {activity.appointment_type == 'Check Up' ? '🩺' : ''}</p>
+						{#if activity.activity_type == 'appointment_added'}
+							<p class="text-base font-medium">
+								New Appointment {activity.appointment_type == 'Check Up' ? '🩺' : ''}
+							</p>
 							<p class="text-sm text-muted-foreground">
 								{activity.activity_description.length > 0 ? activity.activity_description : ''}
 							</p>
@@ -82,18 +98,26 @@
 							>
 						{/if}
 
-                        {#if activity.activity_type == 'appointment_added'}
-                            <Badge
+						{#if activity.activity_type == 'appointment_added'}
+							<Badge
 								class="border border-indigo-600/50 bg-indigo-500/50 text-card-foreground dark:bg-indigo-400/25"
 								>Appointment Added</Badge
 							>
-                        {/if}
+						{/if}
 
 						<p class="text-right text-sm text-muted-foreground">
-							{new Intl.DateTimeFormat(navigator.language || 'en-US', {
-								month: 'short',
-								day: 'numeric'
-							}).format(new Date(activity.created_at))}
+							{dayIsToday
+								? 'Today'
+								: dayIsYesterday
+									? 'Yesterday'
+									: new Date(activity.created_at).toLocaleDateString(
+										navigator.language || 'en-US',
+										{
+											month: 'short',
+											day: 'numeric',
+											year: '2-digit'
+										}
+									)}
 						</p>
 					</div>
 				</div>

@@ -40,8 +40,9 @@
 	let sorting = $state<SortingState>([]);
 	let columnFilters = $state<ColumnFiltersState>([]);
 	let rowSelection = $state<RowSelectionState>({});
+	let globalFilters = $state<string>('');
 
-	let searchFilter: string = $state('');
+	let searchPets: string = $state('');
 	let speciesFilter: string = $state('');
 	let genderFilter: string = $state('');
 	let display: string = $state('cards');
@@ -51,6 +52,23 @@
 			return data;
 		},
 		columns,
+		globalFilterFn: (row, columnId, filterValue) => {
+			const searchableText = [
+				row.getValue('name'),
+				row.getValue('species'),
+				row.getValue('breed'),
+				row.getValue('gender'),
+				row.getValue('color'),
+				row.getValue('birth_date')
+			]
+				.join(' ')
+				.toLowerCase();
+
+			console.log(searchableText)
+			console.log(filterValue)
+
+			return searchableText.includes(filterValue.toLowerCase());
+		},
 		getCoreRowModel: getCoreRowModel(),
 		getPaginationRowModel: getPaginationRowModel(),
 		getSortedRowModel: getSortedRowModel(),
@@ -83,6 +101,15 @@
 				rowSelection = updater;
 			}
 		},
+		onGlobalFilterChange: (updater) => {
+			if (typeof updater === 'function') {
+				globalFilters = updater(globalFilters);
+				console.log(globalFilters)
+			} else {
+				globalFilters = updater;
+				console.log(globalFilters)
+			}
+		},
 		state: {
 			get pagination() {
 				return pagination;
@@ -95,6 +122,9 @@
 			},
 			get rowSelection() {
 				return rowSelection;
+			},
+			get globalFilter() {
+				return globalFilters;
 			}
 		}
 	});
@@ -127,26 +157,37 @@
 		{#if table.getFilteredSelectedRowModel().rows.length > 0}
 			<Button variant="destructive" class="cursor-pointer"><Trash />Delete</Button>
 		{:else}
-			<div class="flex items-center gap-2 relative">
-				<Search class="absolute left-2 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-				<Input type="text" placeholder="Search pets..." class="lg:w-sm max-w-sm pl-8" bind:value={searchFilter} />
-				{#if searchFilter != ''}
+			<div class="relative flex items-center gap-2">
+				<Search class="absolute top-1/2 left-2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+				<Input
+					type="text"
+					placeholder="Search pets..."
+					class="max-w-sm pl-8 lg:w-sm"
+					bind:value={searchPets}
+					onchange={() => {
+						table.setGlobalFilter(searchPets);
+					}}
+					oninput={() => {
+						table.setGlobalFilter(searchPets);
+					}}
+				/>
+				{#if searchPets != ''}
 					<Button
 						variant="outline"
 						size="icon"
 						onclick={() => {
-							searchFilter = '';
+							searchPets = '';
 						}}><X /></Button
 					>
 				{/if}
 			</div>
 
 			<Separator
-					orientation="vertical"
-					decorative={true}
-					class="mx-2 data-[orientation=vertical]:h-6"
-				/>
-			
+				orientation="vertical"
+				decorative={true}
+				class="mx-2 data-[orientation=vertical]:h-6"
+			/>
+
 			<div class="flex items-center gap-2">
 				<Select.Root type="single" name="species" bind:value={speciesFilter}>
 					<Select.Trigger class="w-[130px] cursor-pointer bg-white">
@@ -224,7 +265,14 @@
 							<Table.Row class="bg-primary/25 dark:bg-primary/50">
 								{#each headerGroup.headers as header, index (header.id)}
 									<!-- svelte-ignore attribute_quoted -->
-									<Table.Head class="{index == 0 ? 'rounded-tl-sm' : index == headerGroup.headers.length - 1 ? 'rounded-tr-sm' : ''}" colspan={header.colSpan}>
+									<Table.Head
+										class={index == 0
+											? 'rounded-tl-sm'
+											: index == headerGroup.headers.length - 1
+												? 'rounded-tr-sm'
+												: ''}
+										colspan={header.colSpan}
+									>
 										{#if !header.isPlaceholder}
 											<FlexRender
 												content={header.column.columnDef.header}
@@ -238,7 +286,10 @@
 					</Table.Header>
 					<Table.Body>
 						{#each table.getRowModel().rows as row (row.id)}
-							<Table.Row data-state={row.getIsSelected() && 'selected'} class="hover:[&,&>svelte-css-wrapper]:[&>th,td]:bg-primary/5">
+							<Table.Row
+								data-state={row.getIsSelected() && 'selected'}
+								class="hover:[&,&>svelte-css-wrapper]:[&>th,td]:bg-primary/5"
+							>
 								{#each row.getVisibleCells() as cell (cell.id)}
 									<Table.Cell>
 										<FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />

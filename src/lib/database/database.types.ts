@@ -401,6 +401,41 @@ export type Database = {
         }
         Relationships: []
       }
+      picture_of_the_day: {
+        Row: {
+          created_at: string | null
+          date: string
+          id: string
+          owner_id: string
+          pet_media_id: string | null
+          reactions: string[] | null
+        }
+        Insert: {
+          created_at?: string | null
+          date: string
+          id?: string
+          owner_id?: string
+          pet_media_id?: string | null
+          reactions?: string[] | null
+        }
+        Update: {
+          created_at?: string | null
+          date?: string
+          id?: string
+          owner_id?: string
+          pet_media_id?: string | null
+          reactions?: string[] | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "picture_of_the_day_pet_media_id_fkey"
+            columns: ["pet_media_id"]
+            isOneToOne: false
+            referencedRelation: "pet_media"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       vaccination_types: {
         Row: {
           created_at: string

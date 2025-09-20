@@ -37,38 +37,38 @@
 	let dragDisabled = false;
 	const flipDurationMs = 200;
 
-	function handleLeftConsider(e: CustomEvent) {
+	const handleLeftConsider = (e: CustomEvent) => {
 		columns.left = e.detail.items;
 	}
 
-	function handleLeftFinalize(e: CustomEvent) {
+	const handleLeftFinalize = (e: CustomEvent) => {
 		columns.left = e.detail.items;
 		saveLayout();
 	}
 
-	function handleCenterConsider(e: CustomEvent) {
+	const handleCenterConsider = (e: CustomEvent) => {
 		columns.center = e.detail.items;
 	}
 
-	function handleCenterFinalize(e: CustomEvent) {
+	const handleCenterFinalize = (e: CustomEvent) => {
 		columns.center = e.detail.items;
 		saveLayout();
 	}
 
-	function handleRightConsider(e: CustomEvent) {
+	const handleRightConsider = (e: CustomEvent) => {
 		columns.right = e.detail.items;
 	}
 
-	function handleRightFinalize(e: CustomEvent) {
+	const handleRightFinalize = (e: CustomEvent) => {
 		columns.right = e.detail.items;
 		saveLayout();
 	}
 
-	function saveLayout() {
+	const saveLayout = () => {
 		localStorage.setItem('dashboard-layout', JSON.stringify(columns));
 	}
 
-	function loadLayout() {
+	const loadLayout = () => {
 		const saved = localStorage.getItem('dashboard-layout');
 		if (saved) {
 			try {

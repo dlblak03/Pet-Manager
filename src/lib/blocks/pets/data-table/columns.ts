@@ -1,6 +1,6 @@
 import type { ColumnDef } from "@tanstack/table-core";
 
-import { renderComponent } from "$lib/components/ui/data-table/index.js";
+import { renderComponent, renderSnippet } from "$lib/components/ui/data-table/index.js";
 import { Checkbox } from "$lib/components/ui/checkbox/index.js";
 
 import type { Database } from '$lib/database/database.types';
@@ -9,6 +9,7 @@ import DataTableNameButton from "./data-table-name-button.svelte";
 import DataTableSpeciesButton from "./data-table-species-button.svelte";
 import DataTableBirthDateButton from "./data-table-birth-date-button.svelte";
 import DataTableActions from "./data-table-actions.svelte";
+import { createRawSnippet } from "svelte";
 
 type Pet = Database['pets']['Tables']['pets']['Row'];
 
@@ -50,6 +51,19 @@ export const columns: ColumnDef<Pet>[] = [
                 onclick: column.getToggleSortingHandler(),
             })
         },
+        cell: ({ row }) => {
+			const fullNameSnippet = createRawSnippet<[string]>((getSpecies) => {
+				const species = getSpecies();
+				return {
+					render: () => `<div>${species == 'Cat' ? '🐈' : species == 'Dog' ? '🐶' : ''} ${species}</div>`,
+				};
+			});
+
+			return renderSnippet(
+				fullNameSnippet,
+				row.getValue("species")
+			);
+		},
         filterFn: 'equalsString'
     },
     {
