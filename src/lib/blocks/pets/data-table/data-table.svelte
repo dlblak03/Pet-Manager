@@ -177,6 +177,7 @@
 						size="icon"
 						onclick={() => {
 							searchPets = '';
+							table.setGlobalFilter(searchPets);
 						}}><X /></Button
 					>
 				{/if}
