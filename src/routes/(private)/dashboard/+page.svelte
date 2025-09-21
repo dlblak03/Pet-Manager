@@ -39,34 +39,34 @@
 
 	const handleLeftConsider = (e: CustomEvent) => {
 		columns.left = e.detail.items;
-	}
+	};
 
 	const handleLeftFinalize = (e: CustomEvent) => {
 		columns.left = e.detail.items;
 		saveLayout();
-	}
+	};
 
 	const handleCenterConsider = (e: CustomEvent) => {
 		columns.center = e.detail.items;
-	}
+	};
 
 	const handleCenterFinalize = (e: CustomEvent) => {
 		columns.center = e.detail.items;
 		saveLayout();
-	}
+	};
 
 	const handleRightConsider = (e: CustomEvent) => {
 		columns.right = e.detail.items;
-	}
+	};
 
 	const handleRightFinalize = (e: CustomEvent) => {
 		columns.right = e.detail.items;
 		saveLayout();
-	}
+	};
 
 	const saveLayout = () => {
 		localStorage.setItem('dashboard-layout', JSON.stringify(columns));
-	}
+	};
 
 	const loadLayout = () => {
 		const saved = localStorage.getItem('dashboard-layout');
@@ -79,7 +79,7 @@
 			}
 		}
 		isLayoutLoaded = true;
-	}
+	};
 
 	onMount(() => {
 		loadLayout();

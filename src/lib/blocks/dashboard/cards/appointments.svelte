@@ -38,7 +38,7 @@
 		<Card.Title class="flex items-center gap-2"><CalendarIcon size={12} />Appointments</Card.Title>
 	</Card.Header>
 	<Separator />
-	<Card.Content class="relative flex flex-col gap-2 cursor-default">
+	<Card.Content class="relative flex cursor-default flex-col gap-2">
 		{#if appointmentsLoading}
 			<div class="flex flex-col gap-2">
 				<Skeleton class="h-[20px] w-full rounded-lg" />

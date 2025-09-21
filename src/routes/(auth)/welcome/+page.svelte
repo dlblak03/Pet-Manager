@@ -9,7 +9,7 @@
 	import MoonIcon from '@lucide/svelte/icons/moon';
 
 	let { data }: PageProps = $props();
-	let { email } = $derived(data)
+	let { email } = $derived(data);
 </script>
 
 <svelte:head>

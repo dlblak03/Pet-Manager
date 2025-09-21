@@ -106,7 +106,7 @@
 						<DropdownMenu.Trigger>
 							{#snippet child({ props })}
 								<Button
-									class="cursor-pointer border border-green-600/50 bg-green-500/50 text-card-foreground hover:bg-green-600/50 dark:bg-green-400/25 dark:hover:bg-green-600/50 focus-visible:ring-green-600/50 focus-visible:border-green-600/50"
+									class="cursor-pointer border border-green-600/50 bg-green-500/50 text-card-foreground hover:bg-green-600/50 focus-visible:border-green-600/50 focus-visible:ring-green-600/50 dark:bg-green-400/25 dark:hover:bg-green-600/50"
 									{...props}
 								>
 									<PlusIcon />
@@ -251,7 +251,7 @@
 				>Cancel</Sheet.Close
 			>
 			<Button
-				class={"inline-flex h-9 shrink-0 cursor-pointer items-center justify-center gap-2 rounded-md border border-green-600/50 bg-green-500/50 px-4 py-2 text-sm font-medium whitespace-nowrap text-accent-foreground shadow-xs transition-all outline-none hover:bg-green-600/50 focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-green-600/50 focus-visible:border-green-600/50 disabled:pointer-events-none disabled:opacity-50 has-[>svg]:px-3 aria-disabled:pointer-events-none aria-disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:w-auto dark:border-green-600/50 dark:bg-green-400/25 dark:hover:bg-green-600/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"}
+				class={"inline-flex h-9 shrink-0 cursor-pointer items-center justify-center gap-2 rounded-md border border-green-600/50 bg-green-500/50 px-4 py-2 text-sm font-medium whitespace-nowrap text-accent-foreground shadow-xs transition-all outline-none hover:bg-green-600/50 focus-visible:border-green-600/50 focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-green-600/50 disabled:pointer-events-none disabled:opacity-50 has-[>svg]:px-3 aria-disabled:pointer-events-none aria-disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:w-auto dark:border-green-600/50 dark:bg-green-400/25 dark:hover:bg-green-600/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"}
 				>Save</Button
 			>
 		</Sheet.Footer>

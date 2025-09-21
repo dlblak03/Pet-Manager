@@ -7,8 +7,10 @@
 
 <Card.Root>
 	<Card.Header class="cursor-grab active:cursor-grabbing">
-		<Card.Title class="flex items-center gap-2"><HeartPulse size={12} /> Recent Medical Records</Card.Title>
+		<Card.Title class="flex items-center gap-2"
+			><HeartPulse size={12} /> Recent Medical Records</Card.Title
+		>
 	</Card.Header>
 	<Separator />
-	<Card.Content class="relative flex flex-col gap-2 cursor-default"></Card.Content>
+	<Card.Content class="relative flex cursor-default flex-col gap-2"></Card.Content>
 </Card.Root>

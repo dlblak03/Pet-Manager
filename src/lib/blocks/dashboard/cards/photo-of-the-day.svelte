@@ -32,26 +32,21 @@
 		<Card.Title class="flex items-center gap-2"><Camera size={12} />Photo of the Day</Card.Title>
 	</Card.Header>
 	<Separator />
-	<Card.Content class="relative flex cursor-default flex-col gap-2 overflow-hidden {mediaLoading ? '' : '-mt-6'}">
+	<Card.Content
+		class="relative flex cursor-default flex-col gap-2 overflow-hidden {mediaLoading
+			? ''
+			: '-mt-6'}"
+	>
 		{#if mediaLoading}
 			<div class="flex flex-col gap-2">
 				<Skeleton class="h-[20px] w-full rounded-lg" />
 				<Skeleton class="h-[20px] w-75 rounded-lg" />
 			</div>
 		{:else}
-			<div class="flex w-full h-[250px] items-center justify-center">
-				<img
-					src={url}
-					alt=""
-					class="absolute inset-0 h-full w-full object-cover blur-md"
-				/>
-				<img
-					src={url}
-					alt=""
-					class="z-5 max-h-[250px] max-w-full object-contain shadow-lg "
-				/>
+			<div class="flex h-[250px] w-full items-center justify-center">
+				<img src={url} alt="" class="absolute inset-0 h-full w-full object-cover blur-md" />
+				<img src={url} alt="" class="z-5 max-h-[250px] max-w-full object-contain shadow-lg" />
 			</div>
-
 		{/if}
 	</Card.Content>
 </Card.Root>

@@ -10,5 +10,5 @@
 		<Card.Title class="flex items-center gap-2"><Images size={12} /> Recent Photos</Card.Title>
 	</Card.Header>
 	<Separator />
-	<Card.Content class="relative flex flex-col gap-2 cursor-default"></Card.Content>
+	<Card.Content class="relative flex cursor-default flex-col gap-2"></Card.Content>
 </Card.Root>

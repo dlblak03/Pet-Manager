@@ -1,10 +1,9 @@
 <script lang="ts">
-    import type { PageProps } from './$types';
+	import type { PageProps } from './$types';
 
-    let { data }: PageProps = $props();
+	let { data }: PageProps = $props();
 </script>
 
-
 <svelte:head>
-    <title>Pet Manager | [pet]</title>
+	<title>Pet Manager | [pet]</title>
 </svelte:head>

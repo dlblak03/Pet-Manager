@@ -64,8 +64,8 @@
 				.join(' ')
 				.toLowerCase();
 
-			console.log(searchableText)
-			console.log(filterValue)
+			console.log(searchableText);
+			console.log(filterValue);
 
 			return searchableText.includes(filterValue.toLowerCase());
 		},
@@ -104,10 +104,10 @@
 		onGlobalFilterChange: (updater) => {
 			if (typeof updater === 'function') {
 				globalFilters = updater(globalFilters);
-				console.log(globalFilters)
+				console.log(globalFilters);
 			} else {
 				globalFilters = updater;
-				console.log(globalFilters)
+				console.log(globalFilters);
 			}
 		},
 		state: {
@@ -263,15 +263,16 @@
 				<Table.Root>
 					<Table.Header>
 						{#each table.getHeaderGroups() as headerGroup (headerGroup.id)}
-							<Table.Row class="bg-primary/25 dark:bg-primary/50">
+							<Table.Row class="bg-primary dark:bg-primary">
 								{#each headerGroup.headers as header, index (header.id)}
 									<!-- svelte-ignore attribute_quoted -->
 									<Table.Head
-										class={index == 0
-											? 'rounded-tl-sm'
-											: index == headerGroup.headers.length - 1
-												? 'rounded-tr-sm'
-												: ''}
+										class={'text-white ' +
+											(index == 0
+												? 'rounded-tl-sm'
+												: index == headerGroup.headers.length - 1
+													? 'rounded-tr-sm'
+													: '')}
 										colspan={header.colSpan}
 									>
 										{#if !header.isPlaceholder}
@@ -289,7 +290,7 @@
 						{#each table.getRowModel().rows as row (row.id)}
 							<Table.Row
 								data-state={row.getIsSelected() && 'selected'}
-								class="hover:[&,&>svelte-css-wrapper]:[&>th,td]:bg-primary/5"
+								class="dark:bg-zinc-800 hover:[&,&>svelte-css-wrapper]:[&>th,td]:bg-primary/10"
 							>
 								{#each row.getVisibleCells() as cell (cell.id)}
 									<Table.Cell>

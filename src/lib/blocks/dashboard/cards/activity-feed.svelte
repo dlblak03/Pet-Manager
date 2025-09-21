@@ -9,14 +9,18 @@
 	import * as Card from '$lib/components/ui/card/index.js';
 	import { Skeleton } from '$lib/components/ui/skeleton/index.js';
 	import { Badge } from '$lib/components/ui/badge/index.js';
+	import { Separator } from '$lib/components/ui/separator';
+	import Button from '$lib/components/ui/button/button.svelte';
 
 	import Activity from '@lucide/svelte/icons/activity';
 	import Paw from '@lucide/svelte/icons/paw-print';
 	import Calendar from '@lucide/svelte/icons/calendar';
-	import { Separator } from '$lib/components/ui/separator';
+	import ChevronDown from '@lucide/svelte/icons/chevron-down';
+	import ChevronUp from '@lucide/svelte/icons/chevron-up';
 
 	let activityFeedData: Activity[] = $state([]);
 	let activityFeedLoading: boolean = $state(true);
+	let showMore: boolean = $state(false);
 
 	let value = today(getLocalTimeZone());
 	let yesterday = today(getLocalTimeZone()).subtract({ days: 1 });
@@ -35,14 +39,14 @@
 		<Card.Title class="flex items-center gap-2"><Activity size={12} />Activity Feed</Card.Title>
 	</Card.Header>
 	<Separator />
-	<Card.Content class="flex flex-col gap-2 cursor-default">
+	<Card.Content class="flex cursor-default flex-col gap-2">
 		{#if activityFeedLoading}
 			<div class="flex flex-col gap-2">
 				<Skeleton class="h-[20px] w-full rounded-lg" />
 				<Skeleton class="h-[20px] w-75 rounded-lg" />
 			</div>
 		{:else}
-			{#each activityFeedData as activity}
+			{#each activityFeedData as activity, index (activity.id)}
 				{@const dayIsToday =
 					new Date(activity.created_at).getDate() == value.day &&
 					new Date(activity.created_at).getMonth() + 1 == value.month &&
@@ -52,7 +56,10 @@
 					new Date(activity.created_at).getMonth() + 1 == yesterday.month &&
 					new Date(activity.created_at).getFullYear() == yesterday.year}
 				<div
-					class="flex cursor-default flex-row gap-4 rounded-lg p-2 transition-all duration-150 hover:bg-input/50"
+					class="flex cursor-default flex-row gap-4 rounded-lg p-2 transition-all duration-150 hover:bg-input/50 {!showMore &&
+					index > 3
+						? 'hidden'
+						: ''}"
 				>
 					<!-- icon -->
 					{#if activity.activity_type == 'pet_added'}
@@ -111,17 +118,34 @@
 								: dayIsYesterday
 									? 'Yesterday'
 									: new Date(activity.created_at).toLocaleDateString(
-										navigator.language || 'en-US',
-										{
-											month: 'short',
-											day: 'numeric',
-											year: '2-digit'
-										}
-									)}
+											navigator.language || 'en-US',
+											{
+												month: 'short',
+												day: 'numeric',
+												year: '2-digit'
+											}
+										)}
 						</p>
 					</div>
 				</div>
 			{/each}
 		{/if}
 	</Card.Content>
+	{#if activityFeedData.length > 4}
+		<Card.Footer>
+			<Button
+				variant={'ghost'}
+				class="cursor-pointer"
+				onclick={() => {
+					showMore = !showMore;
+				}}
+			>
+				{#if showMore}
+					Show less <ChevronUp />
+				{:else}
+					Show more <ChevronDown />
+				{/if}
+			</Button>
+		</Card.Footer>
+	{/if}
 </Card.Root>
