@@ -3,12 +3,12 @@
 
 	import { toggleMode } from 'mode-watcher';
 
+	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
+	import * as Sheet from '$lib/components/ui/sheet/index.js';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { buttonVariants } from '$lib/components/ui/button/index.js';
 	import { Separator } from '$lib/components/ui/separator/index.js';
-	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
-	import * as Sheet from '$lib/components/ui/sheet/index.js';
-
+	
 	import X from '@lucide/svelte/icons/x';
 	import SunIcon from '@lucide/svelte/icons/sun';
 	import MoonIcon from '@lucide/svelte/icons/moon';
@@ -54,7 +54,7 @@
 <div class="hidden bg-white bg-zinc-100 dark:bg-zinc-800 dark:bg-zinc-950"></div>
 
 <div
-	class="flex h-[100vh] w-[100vw] p-3 transition-all duration-300 {pathName == 'dashboard'
+	class="flex min-h-[100vh] min-w-[100vw] p-3 transition-all duration-300 {pathName == 'dashboard'
 		? 'bg-white dark:bg-zinc-950'
 		: 'bg-white dark:bg-zinc-950'}"
 >

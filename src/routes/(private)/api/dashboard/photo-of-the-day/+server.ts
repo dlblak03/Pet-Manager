@@ -1,5 +1,5 @@
 import type { RequestHandler } from './$types';
-import { error } from '@sveltejs/kit';
+import { error, fail } from '@sveltejs/kit';
 import type { Database } from '$lib/database/database.types';
 
 type Media = Database['pets']['Tables']['pet_media']['Row'];
@@ -70,7 +70,9 @@ export const GET: RequestHandler = async ({ locals: { supabase, safeGetSession }
 		scoredMedia.sort((a, b) => b.score - a.score);
 		const selected = scoredMedia[0];
 
-		const { error } = await (supabase.from('picture_of_the_day') as any)
+		const { error } = await supabase
+			.schema('pets')
+			.from('picture_of_the_day')
 			.insert({
 				date: new Date().toISOString().split('T')[0],
 				pet_media_id: selected.id
@@ -80,7 +82,7 @@ export const GET: RequestHandler = async ({ locals: { supabase, safeGetSession }
 
 		if (error) {
 			console.error(error);
-			throw error(500, `Failed to insert image: ${error.message}`);
+			throw fail(500, `Failed to insert image: ${error.message}`);
 		}
 
 		const { data, error: supabaseError } = await supabase.storage
@@ -89,7 +91,7 @@ export const GET: RequestHandler = async ({ locals: { supabase, safeGetSession }
 
 		if (supabaseError) {
 			console.error(supabaseError);
-			throw error(500, `Failed to get image: ${supabaseError.message}`);
+			throw fail(500, `Failed to get image: ${supabaseError.message}`);
 		}
 
 		return new Response(data, {
