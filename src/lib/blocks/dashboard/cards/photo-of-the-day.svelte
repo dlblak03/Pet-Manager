@@ -1,12 +1,11 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import { getLocalTimeZone, today } from '@internationalized/date';
+	import { onDestroy, onMount } from 'svelte';
 
 	import * as Card from '$lib/components/ui/card/index.js';
 	import { Skeleton } from '$lib/components/ui/skeleton/index.js';
+	import { Separator } from '$lib/components/ui/separator';
 
 	import Camera from '@lucide/svelte/icons/camera';
-	import { Separator } from '$lib/components/ui/separator';
 
 	let url: any = $state('');
 	let mediaLoading: boolean = $state(true);
@@ -16,14 +15,22 @@
 			const response = await fetch('/api/dashboard/photo-of-the-day');
 
 			if (!response.ok) {
-				throw new Error('Failed to fetch picture of the day');
+				throw new Error('Failed to fetch recent pictures');
 			}
 
-			const blob = await response.blob();
+			const imagesData = await response.json();
+
+			const uint8Array = new Uint8Array(imagesData.data);
+			const blob = new Blob([uint8Array], { type: imagesData.mimeType });
+
 			url = URL.createObjectURL(blob);
 		} finally {
 			mediaLoading = false;
 		}
+	});
+
+	onDestroy(() => {
+		URL.revokeObjectURL(url);
 	});
 </script>
 

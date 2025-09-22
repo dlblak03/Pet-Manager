@@ -21,11 +21,16 @@
 	let generalInformationResponseTimeout: any;
 
 	// svelte-ignore state_referenced_locally
-		let selectedLanguage: string = $state(language || '')
+	let selectedLanguage: string = $state(language || '');
+	const availableLanguages: string[] = ['en'];
+	const friendlyLanguageLabel: { id: string; label: string }[] = [{ id: 'en', label: 'English' }];
 	// svelte-ignore state_referenced_locally
-		let selectedTimezone: string = $state(time_zone || '')
-	let availableLanguages: string[] = ['en']
-	let friendlyLanguageLabel: { id: string, label: string }[] = [{ id: 'en', label: 'English' }]
+	let selectedTimezone: string = $state(time_zone || '');
+	const availableTimezones = [
+		{ label: 'Central European Time', value: 'Europe/Berlin' },
+		{ label: 'Eastern Time', value: 'America/New_York' },
+		{ label: 'Pacific Time', value: 'America/Los_Angeles' }
+	];
 	let localizationLoading: boolean = $state(false);
 	let localizationSuccess: boolean = $state(false);
 	let localizationFailure: boolean = $state(false);
@@ -33,6 +38,9 @@
 
 	const languageTrigger = $derived(
 		friendlyLanguageLabel.find((l) => l.id === selectedLanguage)?.label ?? 'Select a language'
+	);
+	const timezoneTrigger = $derived(
+		availableTimezones.find((t) => t.value === selectedTimezone)?.label ?? 'Select a timezone'
 	);
 </script>
 
@@ -80,7 +88,14 @@
 					<div>
 						<div class="flex w-full max-w-sm flex-col gap-1.5">
 							<Label for="name">Name</Label>
-							<Input autocomplete={'name'} type="text" id="name" name="name" placeholder="" value={owner_name} />
+							<Input
+								autocomplete={'name'}
+								type="text"
+								id="name"
+								name="name"
+								placeholder=""
+								value={owner_name}
+							/>
 							<p class="text-sm text-muted-foreground">Enter your first and last name.</p>
 						</div>
 					</div>
@@ -88,7 +103,14 @@
 					<div>
 						<div class="flex w-full max-w-sm flex-col gap-1.5">
 							<Label for="email">Email Address</Label>
-							<Input autocomplete={'email'} type="email" id="email" name="email" placeholder="" value={owner_email} />
+							<Input
+								autocomplete={'email'}
+								type="email"
+								id="email"
+								name="email"
+								placeholder=""
+								value={owner_email}
+							/>
 						</div>
 					</div>
 				</Card.Content>
@@ -162,7 +184,7 @@
 						<div class="flex w-full max-w-sm flex-col gap-1.5">
 							<Label for="language">Language</Label>
 							<Select.Root type="single" name="language" bind:value={selectedLanguage}>
-								<Select.Trigger id="language" class="w-[130px] cursor-pointer bg-white">
+								<Select.Trigger id="language" class="w-sm cursor-pointer bg-white">
 									{languageTrigger}
 								</Select.Trigger>
 								<Select.Content>
@@ -171,6 +193,27 @@
 										{#each availableLanguages as language (language)}
 											<Select.Item value={language} label={language}>
 												{friendlyLanguageLabel.find((l) => l.id === language)?.label}
+											</Select.Item>
+										{/each}
+									</Select.Group>
+								</Select.Content>
+							</Select.Root>
+						</div>
+					</div>
+
+					<div>
+						<div class="flex w-full max-w-sm flex-col gap-1.5">
+							<Label for="timezone">Timezone</Label>
+							<Select.Root type="single" name="timezone" bind:value={selectedTimezone}>
+								<Select.Trigger id="timezone" class="w-sm cursor-pointer bg-white">
+									{timezoneTrigger}
+								</Select.Trigger>
+								<Select.Content>
+									<Select.Group>
+										<Select.Label>Timezones</Select.Label>
+										{#each availableTimezones as timezone (timezone.value)}
+											<Select.Item value={timezone.value} label={timezone.label}>
+												{timezone.label}
 											</Select.Item>
 										{/each}
 									</Select.Group>

@@ -28,19 +28,27 @@ export const GET: RequestHandler = async ({ locals: { supabase, safeGetSession }
 
 		if (supabaseError) {
 			console.error(supabaseError);
-			throw error(500, `Failed to get image: ${supabaseError.message}`);
+			throw fail(500, `Failed to get image: ${supabaseError.message}`);
 		}
 
-		return new Response(data, {
+		const arrayBuffer = await data?.arrayBuffer();
+
+		return new Response(JSON.stringify({
+			data: Array.from(new Uint8Array(arrayBuffer || [])),
+			mimeType: 'image/' + image.pet_media.mime_type
+		}), {
 			headers: {
-				'Content-Type': 'image/' + image.pet_media.mime_type,
-				'Cache-Control': 'private, max-age=3600'
+				'Cache-Control': 'private, max-age=3600',
+				'Vary': 'Authorization', // Important for user-specific content
+				'X-Content-Type-Options': 'nosniff',
+				'X-Frame-Options': 'DENY'
 			}
 		});
 	} else {
 		const { data: petMedia } = await supabase
 			.from('pet_media')
 			.select(`*, picture_of_the_day(*)`)
+			.eq('media_type', 'image')
 			.order('created_at', { ascending: false });
 
 		if (!petMedia || petMedia.length === 0) {
@@ -94,10 +102,17 @@ export const GET: RequestHandler = async ({ locals: { supabase, safeGetSession }
 			throw fail(500, `Failed to get image: ${supabaseError.message}`);
 		}
 
-		return new Response(data, {
+		const arrayBuffer = await data?.arrayBuffer();
+
+		return new Response(JSON.stringify({
+			data: Array.from(new Uint8Array(arrayBuffer || [])),
+			mimeType: 'image/' + selected.mime_type
+		}), {
 			headers: {
-				'Content-Type': 'image/' + selected.mime_type,
-				'Cache-Control': 'private, max-age=3600'
+				'Cache-Control': 'private, max-age=3600',
+				'Vary': 'Authorization', // Important for user-specific content
+				'X-Content-Type-Options': 'nosniff',
+				'X-Frame-Options': 'DENY'
 			}
 		});
 	}

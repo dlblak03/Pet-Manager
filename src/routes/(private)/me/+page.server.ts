@@ -64,12 +64,14 @@ export const actions: Actions = {
 		const formData = await request.formData();
 
 		const language = formData.get('language') as string;
+		const timezone = formData.get('timezone') as string;
 
 		const { user } = await safeGetSession()
 
 		const { error } = await supabase.schema('pets').from('owners')
 			.update({
-				language: language
+				language: language,
+				time_zone: timezone
 			})
 			.eq('owner_id', user!.id)
 

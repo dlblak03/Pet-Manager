@@ -7,6 +7,8 @@
 	import Eye from '@lucide/svelte/icons/eye';
 
 	let { id }: { id: string } = $props();
+
+	console.log(id)
 </script>
 
 <div class="flex justify-end">
@@ -25,7 +27,7 @@
 			{/snippet}
 		</DropdownMenu.Trigger>
 		<DropdownMenu.Content align="end">
-			<DropdownMenu.Item class="cursor-pointer"><Eye />View Pet</DropdownMenu.Item>
+			<DropdownMenu.Item class="cursor-pointer px-0 py-0"><a href={"/mypets/" + id} class="flex items-center gap-2 px-2 py-1.5 grow"><Eye />View Pet</a></DropdownMenu.Item>
 			<DropdownMenu.Separator />
 			<DropdownMenu.Item class="cursor-pointer" variant="destructive"
 				><Trash />Delete Pet</DropdownMenu.Item
