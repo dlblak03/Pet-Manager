@@ -5,7 +5,7 @@ export const GET: RequestHandler = async ({ locals: { supabase } }) => {
 		.from('activity_feed')
 		.select('*')
 		.order('created_at', { ascending: false })
-		.limit(6);
+		.limit(8);
 
 	return new Response(JSON.stringify(activityFeed));
 };
