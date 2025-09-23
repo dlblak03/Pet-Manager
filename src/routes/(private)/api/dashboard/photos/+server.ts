@@ -26,14 +26,7 @@ export const GET: RequestHandler = async ({ locals: { supabase } }) => {
         });
 
         const allImages = await Promise.all(imagePromises);
-        return new Response(JSON.stringify(allImages), {
-            headers: {
-                'Cache-Control': 'private, max-age=3600',
-                'Vary': 'Authorization',
-                'X-Content-Type-Options': 'nosniff',
-                'X-Frame-Options': 'DENY'
-            }
-        });
+        return new Response(JSON.stringify(allImages));
     }
 
     return new Response();

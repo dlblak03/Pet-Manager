@@ -20,6 +20,10 @@
 
 			const imagesData = await response.json();
 
+			if (imagesData.data.length == 0) {
+				return;
+			}
+
 			const uint8Array = new Uint8Array(imagesData.data);
 			const blob = new Blob([uint8Array], { type: imagesData.mimeType });
 
@@ -40,7 +44,7 @@
 	</Card.Header>
 	<Separator />
 	<Card.Content
-		class="relative flex cursor-default flex-col gap-2 overflow-hidden {mediaLoading
+		class="relative flex cursor-default flex-col gap-2 overflow-hidden {mediaLoading || url == ''
 			? ''
 			: '-mt-6'}"
 	>
@@ -48,6 +52,11 @@
 			<div class="flex flex-col gap-2">
 				<Skeleton class="h-[20px] w-full rounded-lg" />
 				<Skeleton class="h-[20px] w-75 rounded-lg" />
+			</div>
+		{:else if url == ''}
+			<div class="flex h-20 flex-col items-center justify-center gap-2 text-muted-foreground">
+				<Camera size={14} />
+				<p>Add photos to see photo of the day</p>
 			</div>
 		{:else}
 			<div class="flex h-[250px] w-full items-center justify-center">

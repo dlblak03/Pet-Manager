@@ -6,6 +6,7 @@
 	import { Skeleton } from '$lib/components/ui/skeleton';
 
 	import Images from '@lucide/svelte/icons/images';
+	import Camera from '@lucide/svelte/icons/camera';
 
 	let imageUrls: { url: string }[] = $state([]);
 	let mediaLoading: boolean = $state(true);
@@ -44,35 +45,30 @@
 	</Card.Header>
 	<Separator />
 	<Card.Content
-		class="relative flex cursor-default flex-col overflow-hidden {mediaLoading
-			? ''
-			: '-mt-6'}"
+		class="relative flex cursor-default flex-col overflow-hidden {mediaLoading || imageUrls.length == 0 ? '' : '-mt-6'}"
 	>
 		{#if mediaLoading}
 			<div class="flex flex-col gap-2">
 				<Skeleton class="h-[20px] w-full rounded-lg" />
 				<Skeleton class="h-[20px] w-75 rounded-lg" />
 			</div>
+		{:else if imageUrls.length == 0}
+			<div class="flex h-20 flex-col items-center justify-center gap-2 text-muted-foreground">
+				<Camera size={14} />
+				<p>No recent photos</p>
+			</div>
 		{:else}
-			<div class="flex flex-row -mx-6">
+			<div class="-mx-6 flex flex-row">
 				{#each imageUrls.slice(0, 4) as image}
-					<div class="flex grow relative items-center justify-center">
-						<img
-							src={image.url}
-							alt="help"
-							class="z-5 max-w-full object-contain shadow-lg"
-						/>
+					<div class="relative flex grow items-center justify-center">
+						<img src={image.url} alt="help" class="z-5 max-w-full object-contain shadow-lg" />
 					</div>
 				{/each}
 			</div>
-			<div class="flex flex-row -mx-6">
+			<div class="-mx-6 flex flex-row">
 				{#each imageUrls.slice(4, imageUrls.length) as image}
-					<div class="flex grow relative items-center justify-center">
-						<img
-							src={image.url}
-							alt="help"
-							class="z-5 max-w-full object-contain shadow-lg"
-						/>
+					<div class="relative flex grow items-center justify-center">
+						<img src={image.url} alt="help" class="z-5 max-w-full object-contain shadow-lg" />
 					</div>
 				{/each}
 			</div>

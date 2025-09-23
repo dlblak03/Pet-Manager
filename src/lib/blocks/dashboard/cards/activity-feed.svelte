@@ -17,6 +17,7 @@
 	import Calendar from '@lucide/svelte/icons/calendar';
 	import ChevronDown from '@lucide/svelte/icons/chevron-down';
 	import ChevronUp from '@lucide/svelte/icons/chevron-up';
+	import Plus from '@lucide/svelte/icons/plus';
 
 	let activityFeedData: Activity[] = $state([]);
 	let activityFeedLoading: boolean = $state(true);
@@ -45,6 +46,11 @@
 				<Skeleton class="h-[20px] w-full rounded-lg" />
 				<Skeleton class="h-[20px] w-75 rounded-lg" />
 			</div>
+		{:else if activityFeedData.length == 0}
+			<div class="flex h-20 flex-col items-center justify-center gap-2 text-muted-foreground">
+				<Plus size={14} />
+				<p>Add data to see recent activity</p>
+			</div>
 		{:else}
 			{#each activityFeedData as activity, index (activity.id)}
 				{@const dayIsToday =
@@ -69,6 +75,13 @@
 							<Paw size={14} />
 						</div>
 					{/if}
+					{#if activity.activity_type == 'pet_deleted'}
+						<div
+							class="flex h-14 w-14 items-center justify-center rounded-lg border border-red-600/50 bg-red-500/50 dark:bg-red-400/25"
+						>
+							<Paw size={14} />
+						</div>
+					{/if}
 					{#if activity.activity_type == 'appointment_added'}
 						<div
 							class="flex h-14 w-14 items-center justify-center rounded-lg border border-indigo-600/50 bg-indigo-500/50 dark:bg-indigo-400/25"
@@ -85,6 +98,10 @@
 								New {activity.pet_species}
 								{activity.pet_breed ? '(' + activity.pet_breed + ')' : ''} added
 							</p>
+						{/if}
+						{#if activity.activity_type == 'pet_deleted'}
+							<p class="text-base font-medium">{activity.activity_description} ☹️</p>
+							<p class="text-sm text-muted-foreground">All data has been deleted</p>
 						{/if}
 						{#if activity.activity_type == 'appointment_added'}
 							<p class="text-base font-medium">
@@ -104,7 +121,12 @@
 								>Pet Added</Badge
 							>
 						{/if}
-
+						{#if activity.activity_type == 'pet_deleted'}
+							<Badge
+								class="border border-red-600/50 bg-red-500/50 text-card-foreground dark:bg-red-400/25"
+								>Pet Deleted</Badge
+							>
+						{/if}
 						{#if activity.activity_type == 'appointment_added'}
 							<Badge
 								class="border border-indigo-600/50 bg-indigo-500/50 text-card-foreground dark:bg-indigo-400/25"
