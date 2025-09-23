@@ -20,8 +20,6 @@ export const load = (async ({ depends, locals: { supabase } }) => {
 		])
 	).values()];
 
-	console.log(genders)
-
 	return {
 		pets: pets ?? [],
 		species,

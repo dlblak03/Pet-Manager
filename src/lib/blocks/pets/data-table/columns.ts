@@ -10,7 +10,6 @@ import DataTableSpeciesButton from './data-table-species-button.svelte';
 import DataTableBirthDateButton from './data-table-birth-date-button.svelte';
 import DataTableActions from './data-table-actions.svelte';
 import { createRawSnippet } from 'svelte';
-import { buttonVariants } from '$lib/components/ui/button';
 
 type Pet = Database['pets']['Tables']['pets']['Row'];
 

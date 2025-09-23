@@ -1,5 +1,6 @@
 <script lang="ts" generics="TData, TValue">
 	import { untrack } from 'svelte';
+	import { invalidate } from '$app/navigation';
 
 	import {
 		type ColumnDef,
@@ -26,6 +27,7 @@
 	import List from '@lucide/svelte/icons/list';
 	import Trash from '@lucide/svelte/icons/trash';
 	import Search from '@lucide/svelte/icons/search';
+	import Refresh from '@lucide/svelte/icons/refresh-cw';
 
 	type DataTableProps<TData, TValue> = {
 		columns: ColumnDef<TData, TValue>[];
@@ -64,9 +66,6 @@
 				.join(' ')
 				.toLowerCase();
 
-			console.log(searchableText);
-			console.log(filterValue);
-
 			return searchableText.includes(filterValue.toLowerCase());
 		},
 		getCoreRowModel: getCoreRowModel(),
@@ -104,10 +103,8 @@
 		onGlobalFilterChange: (updater) => {
 			if (typeof updater === 'function') {
 				globalFilters = updater(globalFilters);
-				console.log(globalFilters);
 			} else {
 				globalFilters = updater;
-				console.log(globalFilters);
 			}
 		},
 		state: {
@@ -244,7 +241,9 @@
 			</div>
 		{/if}
 
-		<div class="ml-auto">
+		<div class="ml-auto flex items-center gap-2">
+			<Button class="cursor-pointer" variant={'outline'} size={'icon'} onclick={() => { invalidate('supabase:db:pets') }}><Refresh /></Button>
+
 			<ToggleGroup.Root
 				bind:value={display}
 				type="single"
