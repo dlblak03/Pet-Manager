@@ -48,6 +48,7 @@
 	let speciesFilter: string = $state('');
 	let genderFilter: string = $state('');
 	let display: string = $state('cards');
+	let lastDisplay: string = $state('cards');
 
 	const table = createSvelteTable({
 		get data() {
@@ -245,6 +246,7 @@
 			<Button class="cursor-pointer" variant={'outline'} size={'icon'} onclick={() => { invalidate('supabase:db:pets') }}><Refresh /></Button>
 
 			<ToggleGroup.Root
+				onValueChange={(value: string) => { if (value == '') { display = lastDisplay } else { lastDisplay = value } }}
 				bind:value={display}
 				type="single"
 				variant="outline"
