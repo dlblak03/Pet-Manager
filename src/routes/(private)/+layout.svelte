@@ -18,18 +18,41 @@
 	import Calendar from '@lucide/svelte/icons/calendar';
 	import HeartPulse from '@lucide/svelte/icons/heart-pulse';
 	import LogOut from '@lucide/svelte/icons/log-out';
+	import AddPet from '$lib/blocks/layout/add-pet.svelte';
+	import { invalidate } from '$app/navigation';
 
 	let { data, children }: LayoutProps = $props();
 	let { pathName, headerTitle } = $derived(data);
 
 	let addSheet: boolean = $state(false);
+
 	let addPetSheet: boolean = $state(false);
+	let addPetInput = $state({
+		petName: '',
+		species: 'Dog',
+		breed: '',
+		gender: 'Male',
+		birthDay: undefined,
+		color: '',
+		microchip: ''
+	});
 	let addAppointmentSheet: boolean = $state(false);
 	let addMedicalRecordsSheet: boolean = $state(false);
 	let addVaccinationSheet: boolean = $state(false);
 
+	let addSaveLoading: boolean = $state(false);
+
 	const resetSheets = () => {
 		addPetSheet = false;
+		addPetInput = {
+			petName: '',
+			species: 'Dog',
+			breed: '',
+			gender: 'Male',
+			birthDay: undefined,
+			color: '',
+			microchip: ''
+		};
 		addAppointmentSheet = false;
 		addMedicalRecordsSheet = false;
 		addVaccinationSheet = false;
@@ -47,6 +70,32 @@
 		}
 		if (addVaccinationSheet) {
 			return 'Add Vaccination';
+		}
+	};
+
+	const saveData = async () => {
+		addSaveLoading = true;
+
+		if (addPetSheet) {
+			if (addPetInput.petName == '') return;
+			if (addPetInput.species == '') return;
+			if (addPetInput.gender == '') return;
+
+			const addPetResponse = await fetch('/api/mypets', {
+				method: 'PUT',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(addPetInput)
+			}).then((r) => r.json());
+
+			if (addPetResponse.success) {
+				addSaveLoading = false;
+				addPetSheet = false;
+				addSheet = false;
+			}
+
+			await invalidate('supabase:db:pets')
 		}
 	};
 </script>
@@ -72,10 +121,7 @@
 						href={'/mypets'}
 						class="inline-flex size-9 shrink-0 items-center justify-center gap-2 rounded-md border bg-background text-sm font-medium whitespace-nowrap shadow-xs transition-all outline-none hover:bg-accent hover:text-accent-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:border-input dark:bg-input/30 dark:hover:bg-input/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"
 					>
-						<span
-						>
-							🐶
-						</span>
+						<span> 🐶 </span>
 						<span class="sr-only">Toggle my pets menu</span>
 					</a>
 				{/if}
@@ -122,8 +168,8 @@
 									{...props}
 								>
 									<PlusIcon />
-									Add
-									<span class="sr-only">Add item</span>
+									New
+									<span class="sr-only">New item</span>
 								</Button>
 							{/snippet}
 						</DropdownMenu.Trigger>
@@ -256,16 +302,27 @@
 			</Sheet.Title>
 		</Sheet.Header>
 		<Separator class="mt-1" />
-		<div class="grid flex-1 auto-rows-min gap-6 p-4"></div>
+		<div class="grid flex-1 auto-rows-min gap-6 p-4">
+			{#if addPetSheet}
+				<AddPet bind:petinput={addPetInput} />
+			{/if}
+		</div>
 		<Separator />
 		<Sheet.Footer class={'flex-row justify-end'}>
 			<Sheet.Close class={'cursor-pointer ' + buttonVariants({ variant: 'outline' })}
 				>Cancel</Sheet.Close
 			>
 			<Button
+				onclick={saveData}
 				class={"inline-flex h-9 shrink-0 cursor-pointer items-center justify-center gap-2 rounded-md border border-green-600/50 bg-green-500/50 px-4 py-2 text-sm font-medium whitespace-nowrap text-accent-foreground shadow-xs transition-all outline-none hover:bg-green-600/50 focus-visible:border-green-600/50 focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-green-600/50 disabled:pointer-events-none disabled:opacity-50 has-[>svg]:px-3 aria-disabled:pointer-events-none aria-disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:w-auto dark:border-green-600/50 dark:bg-green-400/25 dark:hover:bg-green-600/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"}
-				>Save</Button
 			>
+				{#if addSaveLoading}
+					<div
+						class="h-4 w-4 animate-spin rounded-full border-1 border-foreground border-t-primary"
+					></div>
+				{/if}
+				Save
+			</Button>
 		</Sheet.Footer>
 	</Sheet.Content>
 </Sheet.Root>
