@@ -20,7 +20,7 @@ export const PUT: RequestHandler = async ({ request, locals: { supabase, safeGet
             })
             .select('*')
             .single();
-
+        
         const { error: error2 } = await supabase.schema('pets').from('pets').insert({
             name: addPetInput.petName,
             species: addPetInput.species,

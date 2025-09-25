@@ -10,10 +10,10 @@ export const GET: RequestHandler = async ({ locals: { supabase, safeGetSession }
 		.from('picture_of_the_day')
 		.select(`*, pet_media(*)`)
 		.eq('date', new Date().toISOString().split('T')[0])
-		.single();
+		.limit(1);
 
-	if (media) {
-		const image: POTD & { pet_media: Media } = media;
+	if (media?.length != 0 && media) {
+		const image: POTD & { pet_media: Media } = media[0];
 
 		const pathParts = image.pet_media.file_path.split('/');
 		const fileUserId = pathParts[0];

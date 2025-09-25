@@ -20,6 +20,7 @@
 	import LogOut from '@lucide/svelte/icons/log-out';
 	import AddPet from '$lib/blocks/layout/add-pet.svelte';
 	import { invalidate } from '$app/navigation';
+	import AddAppointment from '$lib/blocks/layout/add-appointment.svelte';
 
 	let { data, children }: LayoutProps = $props();
 	let { pathName, headerTitle } = $derived(data);
@@ -37,6 +38,17 @@
 		microchip: ''
 	});
 	let addAppointmentSheet: boolean = $state(false);
+	let addAppointmentInput = $state({
+		date: '',
+		time: '',
+		type: 'Checkup',
+		veterinarian: '',
+		clinicName: '',
+		clinicAddress: '',
+		clinicPhone: '',
+		duration: '',
+		notes: ''
+	});
 	let addMedicalRecordsSheet: boolean = $state(false);
 	let addVaccinationSheet: boolean = $state(false);
 
@@ -54,6 +66,17 @@
 			microchip: ''
 		};
 		addAppointmentSheet = false;
+		addAppointmentInput = {
+			date: '',
+			time: '',
+			type: 'Checkup',
+			veterinarian: '',
+			clinicName: '',
+			clinicAddress: '',
+			clinicPhone: '',
+			duration: '',
+			notes: ''
+		};
 		addMedicalRecordsSheet = false;
 		addVaccinationSheet = false;
 	};
@@ -95,7 +118,22 @@
 				addSheet = false;
 			}
 
-			await invalidate('supabase:db:pets')
+			await invalidate('supabase:db:pets');
+		}
+		if (addAppointmentSheet) {
+			const addAppointmentResponse = await fetch('/api/appointments', {
+				method: 'PUT',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(addAppointmentInput)
+			}).then((r) => r.json());
+
+			if (addAppointmentResponse.success) {
+				addSaveLoading = false;
+				addAppointmentSheet = false;
+				addSheet = false;
+			}
 		}
 	};
 </script>
@@ -236,11 +274,6 @@
 						<span class="sr-only">Toggle theme</span>
 					</Button>
 
-					<script lang="ts">
-						import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
-						import { Button } from '$lib/components/ui/button/index.js';
-					</script>
-
 					<DropdownMenu.Root>
 						<DropdownMenu.Trigger>
 							{#snippet child({ props })}
@@ -305,6 +338,9 @@
 		<div class="grid flex-1 auto-rows-min gap-6 p-4">
 			{#if addPetSheet}
 				<AddPet bind:petinput={addPetInput} />
+			{/if}
+			{#if addAppointmentSheet}
+				<AddAppointment bind:appointmentinput={addAppointmentInput} />
 			{/if}
 		</div>
 		<Separator />
