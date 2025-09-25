@@ -6,22 +6,16 @@ import type { RequestHandler } from './$types';
 export const GET: RequestHandler = async ({ url, locals: { supabase }, cookies }) => {
 	const token_hash = url.searchParams.get('token_hash');
 	const type = url.searchParams.get('type') as EmailOtpType | null;
-	const next = url.searchParams.get('next') ?? '/sign-in';
-
-	const redirectTo = new URL(url);
-	redirectTo.pathname = next;
-	redirectTo.searchParams.delete('token_hash');
-	redirectTo.searchParams.delete('type');
 
 	if (token_hash && type) {
-		const { error } = await supabase.auth.verifyOtp({ type, token_hash });
-		if (!error) {
-			redirectTo.searchParams.delete('next');
+		const { error: verifyError } = await supabase.auth.verifyOtp({ type, token_hash });
+
+		if (!verifyError) {
 			cookies.delete('email', { path: '/' });
-			redirect(303, redirectTo);
+
+			return redirect(303, '/dashboard');
 		}
 	}
 
-	redirectTo.pathname = '/error';
-	redirect(303, redirectTo);
+	return redirect(303, '/error');
 };

@@ -33,10 +33,12 @@ export const GET: RequestHandler = async ({ locals: { supabase, safeGetSession }
 
 		const arrayBuffer = await data?.arrayBuffer();
 
-		return new Response(JSON.stringify({
-			data: Array.from(new Uint8Array(arrayBuffer || [])),
-			mimeType: 'image/' + image.pet_media.mime_type
-		}));
+		return new Response(
+			JSON.stringify({
+				data: Array.from(new Uint8Array(arrayBuffer || [])),
+				mimeType: 'image/' + image.pet_media.mime_type
+			})
+		);
 	} else {
 		const { data: petMedia } = await supabase
 			.from('pet_media')
@@ -46,10 +48,12 @@ export const GET: RequestHandler = async ({ locals: { supabase, safeGetSession }
 
 		if (!petMedia || petMedia.length === 0) {
 			console.error('No pet media found');
-			return new Response(JSON.stringify({
-				data: Array.from(new Uint8Array([])),
-				mimeType: 'image/jpeg'
-			}));
+			return new Response(
+				JSON.stringify({
+					data: Array.from(new Uint8Array([])),
+					mimeType: 'image/jpeg'
+				})
+			);
 		}
 
 		type allPetMedia = Media & { picture_of_the_day: POTD[] };
@@ -100,9 +104,11 @@ export const GET: RequestHandler = async ({ locals: { supabase, safeGetSession }
 
 		const arrayBuffer = await data?.arrayBuffer();
 
-		return new Response(JSON.stringify({
-			data: Array.from(new Uint8Array(arrayBuffer || [])),
-			mimeType: 'image/' + selected.mime_type
-		}));
+		return new Response(
+			JSON.stringify({
+				data: Array.from(new Uint8Array(arrayBuffer || [])),
+				mimeType: 'image/' + selected.mime_type
+			})
+		);
 	}
 };

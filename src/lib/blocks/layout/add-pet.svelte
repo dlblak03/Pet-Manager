@@ -16,7 +16,7 @@
 		dateStyle: 'short'
 	});
 
-    export let petinput;
+	export let petinput;
 
 	const availableSpecies = [
 		{ label: 'Dog', value: 'Dog' },
@@ -31,7 +31,14 @@
 
 <div class="flex w-full flex-col gap-1.5">
 	<Label for="name">Pet Name</Label>
-	<Input autocomplete={'off'} bind:value={petinput.petName} type="text" id="petname" name="petname" placeholder="" />
+	<Input
+		autocomplete={'off'}
+		bind:value={petinput.petName}
+		type="text"
+		id="petname"
+		name="petname"
+		placeholder=""
+	/>
 </div>
 
 <div class="flex w-full flex-col gap-1.5">
@@ -55,7 +62,14 @@
 
 <div class="flex w-full flex-col gap-1.5">
 	<Label for="breed">Breed</Label>
-	<Input autocomplete={'off'} bind:value={petinput.breed} type="text" id="breed" name="breed" placeholder="" />
+	<Input
+		autocomplete={'off'}
+		bind:value={petinput.breed}
+		type="text"
+		id="breed"
+		name="breed"
+		placeholder=""
+	/>
 </div>
 
 <div class="flex w-full flex-col gap-1.5">
@@ -91,7 +105,9 @@
 			)}
 		>
 			<CalendarIcon />
-			{petinput.birthDate ? df.format(petinput.birthDate.toDate(getLocalTimeZone())) : 'Pick a date'}
+			{petinput.birthDate
+				? df.format(petinput.birthDate.toDate(getLocalTimeZone()))
+				: 'Pick a date'}
 		</Popover.Trigger>
 		<Popover.Content class="w-auto p-0">
 			<Calendar type="single" bind:value={petinput.birthDate} captionLayout="dropdown" />
@@ -101,10 +117,24 @@
 
 <div class="flex w-full flex-col gap-1.5">
 	<Label for="color">Color</Label>
-	<Input autocomplete={'off'} bind:value={petinput.color} type="text" id="color" name="color" placeholder="" />
+	<Input
+		autocomplete={'off'}
+		bind:value={petinput.color}
+		type="text"
+		id="color"
+		name="color"
+		placeholder=""
+	/>
 </div>
 
 <div class="flex w-full flex-col gap-1.5">
 	<Label for="microchip">Microchip ID</Label>
-	<Input autocomplete={'off'} bind:value={petinput.microchip} type="text" id="microchip" name="microchip" placeholder="" />
+	<Input
+		autocomplete={'off'}
+		bind:value={petinput.microchip}
+		type="text"
+		id="microchip"
+		name="microchip"
+		placeholder=""
+	/>
 </div>

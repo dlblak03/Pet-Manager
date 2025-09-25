@@ -1,8 +1,5 @@
 <script lang="ts">
-	import {
-		DateFormatter,
-		getLocalTimeZone,
-	} from '@internationalized/date';
+	import { DateFormatter, getLocalTimeZone } from '@internationalized/date';
 
 	import * as Select from '$lib/components/ui/select/index.js';
 	import { Input } from '$lib/components/ui/input/index.js';
@@ -30,8 +27,8 @@
 </script>
 
 <div class="flex w-full flex-col gap-1.5">
-	<div class="flex gap-4 grow">
-		<div class="flex flex-col grow gap-1.5">
+	<div class="flex grow gap-4">
+		<div class="flex grow flex-col gap-1.5">
 			<Label for="date" class="px-1">Date</Label>
 			<Popover.Root bind:open>
 				<Popover.Trigger id="date">
@@ -90,25 +87,60 @@
 
 <div class="flex w-full flex-col gap-1.5">
 	<Label for="veterinarian">Veterinarian</Label>
-	<Input autocomplete={'off'} bind:value={appointmentinput.veterinarian} type="text" id="veterinarian" name="veterinarian" placeholder="" />
+	<Input
+		autocomplete={'off'}
+		bind:value={appointmentinput.veterinarian}
+		type="text"
+		id="veterinarian"
+		name="veterinarian"
+		placeholder=""
+	/>
 </div>
 
 <div class="flex w-full flex-col gap-1.5">
 	<Label for="clinic">Clinic</Label>
-	<Input autocomplete={'off'} bind:value={appointmentinput.clinicName} type="text" id="clinic" name="clinic" placeholder="" />
+	<Input
+		autocomplete={'off'}
+		bind:value={appointmentinput.clinicName}
+		type="text"
+		id="clinic"
+		name="clinic"
+		placeholder=""
+	/>
 </div>
 
 <div class="flex w-full flex-col gap-1.5">
 	<Label for="address">Address</Label>
-	<Input autocomplete={'off'} bind:value={appointmentinput.clinicAddress} type="text" id="address" name="address" placeholder="" />
+	<Input
+		autocomplete={'off'}
+		bind:value={appointmentinput.clinicAddress}
+		type="text"
+		id="address"
+		name="address"
+		placeholder=""
+	/>
 </div>
 
 <div class="flex w-full flex-col gap-1.5">
 	<Label for="phone">Phone</Label>
-	<Input autocomplete={'off'} bind:value={appointmentinput.clinicName} type="text" id="phone" name="phone" placeholder="" />
+	<Input
+		autocomplete={'off'}
+		bind:value={appointmentinput.clinicName}
+		type="text"
+		id="phone"
+		name="phone"
+		placeholder=""
+	/>
 </div>
 
 <div class="flex w-full flex-col gap-1.5">
 	<Label for="notes">Notes</Label>
-	<Input autocomplete={'off'} bind:value={appointmentinput.notes} type="text" id="notes" name="notes" placeholder="" />
+	<Input
+		autocomplete={'off'}
+		bind:value={appointmentinput.notes}
+		type="text"
+		id="notes"
+		name="notes"
+		placeholder=""
+	/>
 </div>

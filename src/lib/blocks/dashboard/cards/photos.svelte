@@ -45,7 +45,10 @@
 	</Card.Header>
 	<Separator />
 	<Card.Content
-		class="relative flex cursor-default flex-col overflow-hidden {mediaLoading || imageUrls.length == 0 ? '' : '-mt-6'}"
+		class="relative flex cursor-default flex-col overflow-hidden {mediaLoading ||
+		imageUrls.length == 0
+			? ''
+			: '-mt-6'}"
 	>
 		{#if mediaLoading}
 			<div class="flex flex-col gap-2">

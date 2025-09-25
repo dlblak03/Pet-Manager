@@ -8,7 +8,7 @@ export const load = (async ({ locals: { supabase, safeGetSession } }) => {
 	const { data: owner } = await supabase.from('owners').select('*').single();
 
 	if (!owner) {
-		const { user } = await safeGetSession()
+		const { user } = await safeGetSession();
 
 		const { error } = await supabase
 			.schema('pets')
@@ -44,21 +44,23 @@ export const actions: Actions = {
 		const fullName = formData.get('name') as string;
 		const email = formData.get('email') as string;
 
-		const { user } = await safeGetSession()
+		const { user } = await safeGetSession();
 
-		const { error } = await supabase.schema('pets').from('owners')
+		const { error } = await supabase
+			.schema('pets')
+			.from('owners')
 			.update({
 				owner_name: fullName,
 				owner_email: email
 			})
-			.eq('owner_id', user!.id)
+			.eq('owner_id', user!.id);
 
 		if (error) {
-			console.error('Update error: ' + error.message)
-			return fail(500, {})
+			console.error('Update error: ' + error.message);
+			return fail(500, {});
 		}
 
-		return {}
+		return {};
 	},
 	updatelocalization: async ({ request, locals: { supabase, safeGetSession } }) => {
 		const formData = await request.formData();
@@ -66,20 +68,22 @@ export const actions: Actions = {
 		const language = formData.get('language') as string;
 		const timezone = formData.get('timezone') as string;
 
-		const { user } = await safeGetSession()
+		const { user } = await safeGetSession();
 
-		const { error } = await supabase.schema('pets').from('owners')
+		const { error } = await supabase
+			.schema('pets')
+			.from('owners')
 			.update({
 				language: language,
 				time_zone: timezone
 			})
-			.eq('owner_id', user!.id)
+			.eq('owner_id', user!.id);
 
 		if (error) {
-			console.error('Update error: ' + error.message)
-			return fail(500, {})
+			console.error('Update error: ' + error.message);
+			return fail(500, {});
 		}
 
-		return {}
+		return {};
 	}
 };

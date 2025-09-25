@@ -7,18 +7,16 @@ export const load = (async ({ depends, locals: { supabase } }) => {
 	depends('supabase:db:pets');
 
 	const { data: pets } = await supabase.from('pets').select('*').order('name');
-	const species = [...new Map(
-		pets?.map((pet: Pet) => [
-			pet.species,
-			{ value: pet.species ?? '', label: pet.species ?? '' }
-		])
-	).values()];
-	const genders = [...new Map(
-		pets?.map((pet: Pet) => [
-			pet.gender,
-			{ value: pet.gender ?? '', label: pet.gender ?? '' }
-		])
-	).values()];
+	const species = [
+		...new Map(
+			pets?.map((pet: Pet) => [pet.species, { value: pet.species ?? '', label: pet.species ?? '' }])
+		).values()
+	];
+	const genders = [
+		...new Map(
+			pets?.map((pet: Pet) => [pet.gender, { value: pet.gender ?? '', label: pet.gender ?? '' }])
+		).values()
+	];
 
 	return {
 		pets: pets ?? [],

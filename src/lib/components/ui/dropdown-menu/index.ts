@@ -31,7 +31,6 @@ export {
 	SubContent,
 	SubTrigger,
 	Trigger,
-
 	Root as DropdownMenu,
 	CheckboxItem as DropdownMenuCheckboxItem,
 	Content as DropdownMenuContent,
@@ -46,5 +45,5 @@ export {
 	SubContent as DropdownMenuSubContent,
 	SubTrigger as DropdownMenuSubTrigger,
 	Trigger as DropdownMenuTrigger,
-	GroupHeading as DropdownMenuGroupHeading,
+	GroupHeading as DropdownMenuGroupHeading
 };

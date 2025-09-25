@@ -243,10 +243,23 @@
 		{/if}
 
 		<div class="ml-auto flex items-center gap-2">
-			<Button class="cursor-pointer" variant={'outline'} size={'icon'} onclick={() => { invalidate('supabase:db:pets') }}><Refresh /></Button>
+			<Button
+				class="cursor-pointer"
+				variant={'outline'}
+				size={'icon'}
+				onclick={() => {
+					invalidate('supabase:db:pets');
+				}}><Refresh /></Button
+			>
 
 			<ToggleGroup.Root
-				onValueChange={(value: string) => { if (value == '') { display = lastDisplay } else { lastDisplay = value } }}
+				onValueChange={(value: string) => {
+					if (value == '') {
+						display = lastDisplay;
+					} else {
+						lastDisplay = value;
+					}
+				}}
 				bind:value={display}
 				type="single"
 				variant="outline"

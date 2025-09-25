@@ -7,15 +7,14 @@
 	import EllipsisIcon from '@lucide/svelte/icons/ellipsis';
 	import Trash from '@lucide/svelte/icons/trash';
 	import Eye from '@lucide/svelte/icons/eye';
-	
 
 	let { id }: { id: string } = $props();
 
 	const deletePet = async (petId: string) => {
-		const response = await fetch('/api/mypets/' + petId, { method: 'DELETE' })
+		const response = await fetch('/api/mypets/' + petId, { method: 'DELETE' });
 
-		invalidate('supabase:db:pets')
-	}
+		invalidate('supabase:db:pets');
+	};
 </script>
 
 <div class="flex justify-end">
@@ -34,10 +33,18 @@
 			{/snippet}
 		</DropdownMenu.Trigger>
 		<DropdownMenu.Content align="end">
-			<DropdownMenu.Item class="cursor-pointer px-0 py-0"><a href={"/mypets/" + id} class="flex items-center gap-2 px-2 py-1.5 grow"><Eye />View Pet</a></DropdownMenu.Item>
+			<DropdownMenu.Item class="cursor-pointer px-0 py-0"
+				><a href={'/mypets/' + id} class="flex grow items-center gap-2 px-2 py-1.5"
+					><Eye />View Pet</a
+				></DropdownMenu.Item
+			>
 			<DropdownMenu.Separator />
-			<DropdownMenu.Item onSelect={() => { deletePet(id) }} class="cursor-pointer" variant="destructive"
-				><Trash />Delete Pet</DropdownMenu.Item
+			<DropdownMenu.Item
+				onSelect={() => {
+					deletePet(id);
+				}}
+				class="cursor-pointer"
+				variant="destructive"><Trash />Delete Pet</DropdownMenu.Item
 			>
 		</DropdownMenu.Content>
 	</DropdownMenu.Root>
