@@ -1,35 +1,68 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { getLocalTimeZone, today } from '@internationalized/date';
-
-	import * as Card from '$lib/components/ui/card/index.js';
+	import { today as heute } from '@internationalized/date';
 
 	import type { Database } from '$lib/database/database.types';
 
 	type Appointment = Database['pets']['Tables']['appointments']['Row'];
 	type Appointments = Appointment & { pet: { name: string } };
 
+	import * as Card from '$lib/components/ui/card/index.js';
 	import { Calendar } from '$lib/components/ui/calendar/index.js';
 	import CalendarDay from '$lib/components/ui/calendar/calendar-day.svelte';
 	import { Skeleton } from '$lib/components/ui/skeleton/index.js';
+	import { Separator } from '$lib/components/ui/separator';
 
 	import CalendarIcon from '@lucide/svelte/icons/calendar';
 	import Clock from '@lucide/svelte/icons/clock';
 	import CircleCheckBig from '@lucide/svelte/icons/circle-check-big';
-	import { Separator } from '$lib/components/ui/separator';
 
-	let appointmentsData: Appointments[] = $state([]);
+	let appointments: Appointments[] = $state([]);
 	let appointmentsLoading: boolean = $state(true);
 
-	let value = today(getLocalTimeZone());
-	let yesterday = today(getLocalTimeZone()).subtract({ days: 1 });
+	let today = heute('UTC');
+	let yesterday = heute('UTC').subtract({ days: 1 });
 
-	onMount(async () => {
-		try {
-			appointmentsData = await fetch('/api/dashboard/appointments').then((r) => r.json());
-		} finally {
-			appointmentsLoading = false;
+	type appointmentsResponse = {
+		success: boolean;
+		appointments: Appointments[] | null;
+		appointmentsError: string | null;
+	};
+
+	onMount(() => {
+		const controller = new AbortController();
+
+		async function fetchAppointments() {
+			try {
+				const response = await fetch('/api/dashboard/appointments', {
+					signal: controller.signal
+				});
+
+				if (!response.ok) {
+					throw new Error(`HTTP error. Status: ${response.status}`);
+				}
+
+				const data: appointmentsResponse = await response.json();
+
+				if (data.success && data.appointments) {
+					appointments = data.appointments;
+				}
+			} catch (error) {
+				if (error instanceof Error) {
+					if (error.name !== 'AbortError') {
+						console.error('Failed to fetch appointments: ', error);
+					}
+				} else {
+					console.error('An unexpected error occurred: ', error);
+				}
+			} finally {
+				appointmentsLoading = false;
+			}
 		}
+
+		fetchAppointments();
+
+		return () => controller.abort();
 	});
 </script>
 
@@ -49,27 +82,26 @@
 				readonly={true}
 				type="single"
 				class="grow-td grow-th grow-months w-full overflow-auto"
-				{value}
-				numberOfMonths={2}
+				value={today}
 			>
 				{#snippet day({ day })}
-					{@const dayOfAppointment = appointmentsData.find((a) => {
+					{@const dayOfAppointment = appointments.find((a) => {
 						const appointmentDate = new Date(a.appointment_date);
 						return (
-							appointmentDate.getDate() == day.day &&
-							appointmentDate.getMonth() + 1 == day.month &&
-							appointmentDate.getFullYear() == day.year
+							appointmentDate.getUTCDate() == day.day &&
+							appointmentDate.getUTCMonth() + 1 == day.month &&
+							appointmentDate.getUTCFullYear() == day.year
 						);
 					})}
-					<CalendarDay class="flex flex-col items-center">
+					<CalendarDay class="flex flex-col items-center h-10 w-10">
 						{day.day}
 						{#if dayOfAppointment}
-							{@const dayIsToday = appointmentsData.find((a) => {
+							{@const dayIsToday = appointments.find((a) => {
 								const appointmentDate = new Date(a.appointment_date);
 								return (
-									appointmentDate.getDate() == value.day &&
-									appointmentDate.getMonth() + 1 == value.month &&
-									appointmentDate.getFullYear() == value.year
+									appointmentDate.getUTCDate() == today.day &&
+									appointmentDate.getUTCMonth() + 1 == today.month &&
+									appointmentDate.getUTCFullYear() == today.year
 								);
 							})}
 							<div
@@ -81,24 +113,21 @@
 					</CalendarDay>
 				{/snippet}
 			</Calendar>
-			<div class="mt-2">
-				<p class="text-base font-medium">Next 3 Appointments</p>
-			</div>
-			{#if appointmentsData.length > 0}
-				{#each appointmentsData as appointment}
+			<Separator />
+			{#if appointments.length > 0}
+				{#each appointments as appointment}
 					{@const dayIsToday =
-						new Date(appointment.appointment_date).getDate() == value.day &&
-						new Date(appointment.appointment_date).getMonth() + 1 == value.month &&
-						new Date(appointment.appointment_date).getFullYear() == value.year}
+						new Date(appointment.appointment_date).getUTCDate() == today.day &&
+						new Date(appointment.appointment_date).getUTCMonth() + 1 == today.month &&
+						new Date(appointment.appointment_date).getUTCFullYear() == today.year}
 					{@const dayIsYesterday =
-						new Date(appointment.appointment_date).getDate() == yesterday.day &&
-						new Date(appointment.appointment_date).getMonth() + 1 == yesterday.month &&
-						new Date(appointment.appointment_date).getFullYear() == yesterday.year}
+						new Date(appointment.appointment_date).getUTCDate() == yesterday.day &&
+						new Date(appointment.appointment_date).getUTCMonth() + 1 == yesterday.month &&
+						new Date(appointment.appointment_date).getUTCFullYear() == yesterday.year}
 					<div
 						class="flex cursor-default flex-row gap-4 rounded-lg p-2 transition-all duration-150 hover:bg-input/50"
 					>
-						<!-- icon -->
-						{#if appointment.appointment_type == 'Check Up'}
+						{#if appointment.appointment_type == 'Checkup'}
 							<div
 								class="flex h-14 w-14 items-center justify-center rounded-lg border border-orange-600/50 bg-orange-500/50 dark:bg-orange-400/25"
 							>
@@ -106,7 +135,6 @@
 							</div>
 						{/if}
 
-						<!-- main text -->
 						<div class="flex flex-col gap-1">
 							<p class="text-base font-medium">
 								{appointment.pet.name} – {appointment.appointment_type}
@@ -116,12 +144,12 @@
 									appointment.appointment_date
 								).toLocaleTimeString(navigator.language || 'en-US', {
 									hour: '2-digit',
-									minute: '2-digit'
+									minute: '2-digit',
+									timeZone: 'UTC'
 								})}
 							</p>
 						</div>
 
-						<!-- date -->
 						<div class="ml-auto flex flex-col gap-2">
 							<p class="text-sm text-muted-foreground">
 								{dayIsToday
@@ -133,7 +161,8 @@
 												{
 													month: 'short',
 													day: 'numeric',
-													year: '2-digit'
+													year: '2-digit',
+													timeZone: 'UTC'
 												}
 											)}
 							</p>
@@ -141,7 +170,7 @@
 					</div>
 				{/each}
 			{:else}
-				<div class="flex h-20 flex-col items-center justify-center gap-2 text-muted-foreground">
+				<div class="flex h-40 flex-col items-center justify-center gap-2 text-muted-foreground">
 					<Clock size={14} />
 					<p>No upcoming appointments</p>
 				</div>
