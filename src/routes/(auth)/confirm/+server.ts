@@ -15,6 +15,8 @@ export const GET: RequestHandler = async ({ url, locals: { supabase }, cookies }
 
 			return redirect(303, '/dashboard');
 		}
+
+		console.error('Auth verify error: ' + verifyError);
 	}
 
 	return redirect(303, '/error');

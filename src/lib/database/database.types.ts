@@ -432,7 +432,6 @@ export type Database = {
           id: string
           owner_id: string
           pet_media_id: string | null
-          reactions: string[] | null
         }
         Insert: {
           created_at?: string | null
@@ -440,7 +439,6 @@ export type Database = {
           id?: string
           owner_id?: string
           pet_media_id?: string | null
-          reactions?: string[] | null
         }
         Update: {
           created_at?: string | null
@@ -448,7 +446,6 @@ export type Database = {
           id?: string
           owner_id?: string
           pet_media_id?: string | null
-          reactions?: string[] | null
         }
         Relationships: [
           {

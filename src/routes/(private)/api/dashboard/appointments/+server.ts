@@ -10,6 +10,7 @@ export const GET: RequestHandler = async ({ locals: { supabase } }) => {
 		.limit(3);
 
 	if (appointmentsError) {
+		console.error('Appointments dashboard fetch error: ' + appointmentsError)
 		return new Response(JSON.stringify({
 			success: false,
 			appointments: null,
