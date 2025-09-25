@@ -1,7 +1,7 @@
 import type { RequestHandler } from './$types';
 
 export const GET: RequestHandler = async ({ locals: { supabase } }) => {
-	const { data: media } = await supabase
+	const { data: photos, error: photosError } = await supabase
 		.schema('pets')
 		.from('pet_media')
 		.select(`*`)
@@ -9,23 +9,53 @@ export const GET: RequestHandler = async ({ locals: { supabase } }) => {
 		.order('created_at', { ascending: false })
 		.limit(8);
 
-	if (media) {
-		const imagePromises = media.map(async (pic) => {
-			const { data, error } = await supabase.storage.from('private').download(pic.file_path);
+	if (photosError) {
+		console.error('Photos fetch error: ' + photosError);
+		return new Response(
+			JSON.stringify({
+				success: false,
+				photos: null,
+				photosError: photosError.message
+			})
+		);
+	}
 
-			if (error) throw error;
+	if (photos) {
+		const imagePromises = photos.map(async (photo) => {
+			const { data: photoFile, error: photoFileError } = await supabase.storage
+				.from('private')
+				.download(photo.file_path);
 
-			const arrayBuffer = await data.arrayBuffer();
+			if (photoFileError) {
+				console.error(`Failed to download photo: `, photoFileError);
+				return null;
+			}
+
+			const arrayBuffer = await photoFile.arrayBuffer();
 
 			return {
-				data: Array.from(new Uint8Array(arrayBuffer)),
-				mimeType: 'image/' + pic.mime_type
+				photo: Array.from(new Uint8Array(arrayBuffer)),
+				mimeType: 'image/' + photo.mime_type
 			};
 		});
 
 		const allImages = await Promise.all(imagePromises);
-		return new Response(JSON.stringify(allImages));
+		const successfulImages = allImages.filter((photo) => photo !== null);
+
+		return new Response(
+			JSON.stringify({
+				success: true,
+				photos: successfulImages,
+				photosError: null
+			})
+		);
 	}
 
-	return new Response();
+	return new Response(
+		JSON.stringify({
+			success: true,
+			photos: null,
+			photosError: null
+		})
+	);
 };

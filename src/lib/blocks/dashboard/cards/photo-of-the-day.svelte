@@ -67,8 +67,7 @@
 	</Card.Header>
 	<Separator />
 	<Card.Content
-		class="relative flex cursor-default flex-col gap-2 overflow-hidden {potdLoading ||
-		potdUrl == ''
+		class="relative flex cursor-default flex-col gap-2 overflow-hidden {potdLoading || potdUrl == ''
 			? ''
 			: '-mt-6'}"
 	>
@@ -84,8 +83,18 @@
 			</div>
 		{:else}
 			<div class="flex h-[250px] w-full items-center justify-center">
-				<img fetchpriority="high" src={potdUrl} alt="" class="absolute inset-0 h-full w-full object-cover blur-md" />
-				<img fetchpriority="high" src={potdUrl} alt="" class="z-5 max-h-[250px] max-w-full object-contain shadow-lg" />
+				<img
+					fetchpriority="high"
+					src={potdUrl}
+					alt=""
+					class="absolute inset-0 h-full w-full object-cover blur-md"
+				/>
+				<img
+					fetchpriority="high"
+					src={potdUrl}
+					alt=""
+					class="z-5 max-h-[250px] max-w-full object-contain shadow-lg"
+				/>
 			</div>
 		{/if}
 	</Card.Content>

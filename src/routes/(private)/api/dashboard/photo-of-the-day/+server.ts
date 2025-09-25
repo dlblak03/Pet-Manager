@@ -13,13 +13,15 @@ export const GET: RequestHandler = async ({ locals: { supabase } }) => {
 		.single();
 
 	if (potdError) {
-		console.error('Picture of the day fetch error: ' + potdError)
-		return new Response(JSON.stringify({
-			success: false,
-			potd: null,
-			mimeType: null,
-			potdError: potdError.message
-		}))
+		console.error('Picture of the day fetch error: ' + potdError);
+		return new Response(
+			JSON.stringify({
+				success: false,
+				potd: null,
+				mimeType: null,
+				potdError: potdError.message
+			})
+		);
 	}
 
 	if (potd) {
@@ -30,23 +32,27 @@ export const GET: RequestHandler = async ({ locals: { supabase } }) => {
 			.download(image.pet_media!.file_path);
 
 		if (!potdFile || potdFileError) {
-			console.error('Picture of the day download error: ' + potdError)
-			return new Response(JSON.stringify({
-				success: false,
-				potd: null,
-				mimeType: null,
-				potdError: potdFileError.message
-			}))
+			console.error('Picture of the day download error: ' + potdError);
+			return new Response(
+				JSON.stringify({
+					success: false,
+					potd: null,
+					mimeType: null,
+					potdError: potdFileError.message
+				})
+			);
 		}
 
 		const arrayBuffer = await potdFile.arrayBuffer();
 
-		return new Response(JSON.stringify({
-			success: true,
-			potd: Array.from(new Uint8Array(arrayBuffer || [])),
-			mimeType: 'image/' + image.pet_media!.mime_type,
-			potdError: null
-		}))
+		return new Response(
+			JSON.stringify({
+				success: true,
+				potd: Array.from(new Uint8Array(arrayBuffer || [])),
+				mimeType: 'image/' + image.pet_media!.mime_type,
+				potdError: null
+			})
+		);
 	} else {
 		const { data: media, error: mediaError } = await supabase
 			.schema('pets')
@@ -56,22 +62,26 @@ export const GET: RequestHandler = async ({ locals: { supabase } }) => {
 			.order('created_at', { ascending: false });
 
 		if (!media || mediaError) {
-			console.error('Picture of the day media error: ' + mediaError)
-			return new Response(JSON.stringify({
-				success: false,
-				potd: null,
-				mimeType: null,
-				potdError: mediaError.message
-			}))
+			console.error('Picture of the day media error: ' + mediaError);
+			return new Response(
+				JSON.stringify({
+					success: false,
+					potd: null,
+					mimeType: null,
+					potdError: mediaError.message
+				})
+			);
 		}
 
 		if (media.length == 0) {
-			return new Response(JSON.stringify({
-				success: true,
-				potd: null,
-				mimeType: null,
-				potdError: null
-			}))
+			return new Response(
+				JSON.stringify({
+					success: true,
+					potd: null,
+					mimeType: null,
+					potdError: null
+				})
+			);
 		}
 
 		const scoredMedia = media.map((media: Media & { picture_of_the_day: POTD[] }) => {
@@ -106,12 +116,14 @@ export const GET: RequestHandler = async ({ locals: { supabase } }) => {
 
 		if (potdInsertError) {
 			console.error('Picture of the day insert error: ' + potdInsertError);
-			return new Response(JSON.stringify({
-				success: false,
-				potd: null,
-				mimeType: null,
-				potdError: potdInsertError.message
-			}))
+			return new Response(
+				JSON.stringify({
+					success: false,
+					potd: null,
+					mimeType: null,
+					potdError: potdInsertError.message
+				})
+			);
 		}
 
 		const { data: potdFile, error: potdFileError } = await supabase.storage
@@ -119,22 +131,26 @@ export const GET: RequestHandler = async ({ locals: { supabase } }) => {
 			.download(selected.file_path);
 
 		if (!potdFile || potdFileError) {
-			console.error('Picture of the day download error: ' + potdError)
-			return new Response(JSON.stringify({
-				success: false,
-				potd: null,
-				mimeType: null,
-				potdError: potdFileError.message
-			}))
+			console.error('Picture of the day download error: ' + potdError);
+			return new Response(
+				JSON.stringify({
+					success: false,
+					potd: null,
+					mimeType: null,
+					potdError: potdFileError.message
+				})
+			);
 		}
 
 		const arrayBuffer = await potdFile.arrayBuffer();
 
-		return new Response(JSON.stringify({
-			success: true,
-			potd: Array.from(new Uint8Array(arrayBuffer || [])),
-			mimeType: 'image/' + selected.mime_type,
-			potdError: null
-		}))
+		return new Response(
+			JSON.stringify({
+				success: true,
+				potd: Array.from(new Uint8Array(arrayBuffer || [])),
+				mimeType: 'image/' + selected.mime_type,
+				potdError: null
+			})
+		);
 	}
 };

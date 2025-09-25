@@ -88,7 +88,10 @@
 
 <svelte:head>
 	<title>Pet Manager | Dashboard</title>
-	<meta name="description" content="Pet Manager Dashboard - View upcoming vaccinations, appointments, medical records, activity feed, and photos. Everything you need to manage your pet's health and care in one place.">
+	<meta
+		name="description"
+		content="Pet Manager Dashboard - View upcoming vaccinations, appointments, medical records, activity feed, and photos. Everything you need to manage your pet's health and care in one place."
+	/>
 </svelte:head>
 
 <div class="flex grow flex-col gap-5 p-5">

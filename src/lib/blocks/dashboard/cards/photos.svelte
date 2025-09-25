@@ -8,34 +8,58 @@
 	import Images from '@lucide/svelte/icons/images';
 	import Camera from '@lucide/svelte/icons/camera';
 
-	let imageUrls: { url: string }[] = $state([]);
-	let mediaLoading: boolean = $state(true);
+	let photoUrls: string[] = $state([]);
+	let photosLoading: boolean = $state(true);
 
-	onMount(async () => {
-		try {
-			const response = await fetch('/api/dashboard/photos');
+	type photosResponse = {
+		success: boolean;
+		photos: { photo: number[]; mimeType: string }[] | null;
+		potdError: string | null;
+	};
 
-			if (!response.ok) {
-				throw new Error('Failed to fetch recent pictures');
+	onMount(() => {
+		const controller = new AbortController();
+
+		async function fetchPhotos() {
+			try {
+				const response = await fetch('/api/dashboard/photos', {
+					signal: controller.signal
+				});
+
+				if (!response.ok) {
+					throw new Error(`HTTP error. Status: ${response.status}`);
+				}
+
+				const data: photosResponse = await response.json();
+
+				if (data.success && data.photos) {
+					photoUrls = data.photos.map((photo) => {
+						const uint8Array = new Uint8Array(photo.photo);
+						const blob = new Blob([uint8Array], { type: photo.mimeType });
+
+						return URL.createObjectURL(blob);
+					});
+				}
+			} catch (error) {
+				if (error instanceof Error) {
+					if (error.name !== 'AbortError') {
+						console.error('Failed to fetch photos: ', error);
+					}
+				} else {
+					console.error('An unexpected error occurred: ', error);
+				}
+			} finally {
+				photosLoading = false;
 			}
-
-			const imagesData = await response.json();
-
-			imageUrls = imagesData.map((imageInfo: any) => {
-				const uint8Array = new Uint8Array(imageInfo.data);
-				const blob = new Blob([uint8Array], { type: imageInfo.mimeType });
-
-				return {
-					url: URL.createObjectURL(blob)
-				};
-			});
-		} finally {
-			mediaLoading = false;
 		}
+
+		fetchPhotos();
+
+		return () => controller.abort();
 	});
 
 	onDestroy(() => {
-		imageUrls.forEach((image) => URL.revokeObjectURL(image.url));
+		photoUrls.forEach((url) => URL.revokeObjectURL(url));
 	});
 </script>
 
@@ -45,33 +69,33 @@
 	</Card.Header>
 	<Separator />
 	<Card.Content
-		class="relative flex cursor-default flex-col overflow-hidden {mediaLoading ||
-		imageUrls.length == 0
+		class="relative flex cursor-default flex-col overflow-hidden {photosLoading ||
+		photoUrls.length == 0
 			? ''
 			: '-mt-6'}"
 	>
-		{#if mediaLoading}
+		{#if photosLoading}
 			<div class="flex flex-col gap-2">
 				<Skeleton class="h-[20px] w-full rounded-lg" />
 				<Skeleton class="h-[20px] w-75 rounded-lg" />
 			</div>
-		{:else if imageUrls.length == 0}
-			<div class="flex h-20 flex-col items-center justify-center gap-2 text-muted-foreground">
+		{:else if photoUrls.length == 0}
+			<div class="flex h-40 flex-col items-center justify-center gap-2 text-muted-foreground">
 				<Camera size={14} />
 				<p>No recent photos</p>
 			</div>
 		{:else}
 			<div class="-mx-6 flex flex-row">
-				{#each imageUrls.slice(0, 4) as image}
+				{#each photoUrls.slice(0, 4) as url (url)}
 					<div class="relative flex grow items-center justify-center">
-						<img src={image.url} alt="help" class="z-5 max-w-full object-contain shadow-lg" />
+						<img src={url} alt="" class="z-5 max-w-full object-contain shadow-lg" />
 					</div>
 				{/each}
 			</div>
 			<div class="-mx-6 flex flex-row">
-				{#each imageUrls.slice(4, imageUrls.length) as image}
+				{#each photoUrls.slice(4, photoUrls.length) as url (url)}
 					<div class="relative flex grow items-center justify-center">
-						<img src={image.url} alt="help" class="z-5 max-w-full object-contain shadow-lg" />
+						<img src={url} alt="" class="z-5 max-w-full object-contain shadow-lg" />
 					</div>
 				{/each}
 			</div>

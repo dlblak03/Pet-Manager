@@ -93,7 +93,7 @@
 							appointmentDate.getUTCFullYear() == day.year
 						);
 					})}
-					<CalendarDay class="flex flex-col items-center h-10 w-10">
+					<CalendarDay class="flex h-10 w-10 flex-col items-center">
 						{day.day}
 						{#if dayOfAppointment}
 							{@const dayIsToday = appointments.find((a) => {
