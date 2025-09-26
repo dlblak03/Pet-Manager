@@ -6,8 +6,6 @@ type Owner = Database['pets']['Tables']['owners']['Row'];
 export const PUT: RequestHandler = async ({ request, locals: { supabase, safeGetSession } }) => {
 	const addAppointmentInput = await request.json();
 
-	console.log(addAppointmentInput);
-
 	const { data: owner } = await supabase.from('owners').select('*').single();
 	const { user } = await safeGetSession();
 

@@ -16,9 +16,11 @@
 	import CalendarIcon from '@lucide/svelte/icons/calendar';
 	import Clock from '@lucide/svelte/icons/clock';
 	import CircleCheckBig from '@lucide/svelte/icons/circle-check-big';
+	import CircleAlert from '@lucide/svelte/icons/circle-alert';
 
 	let appointments: Appointments[] = $state([]);
 	let appointmentsLoading: boolean = $state(true);
+	let appointmentsError: boolean = $state(false);
 
 	let today = heute('UTC');
 	let yesterday = heute('UTC').subtract({ days: 1 });
@@ -46,6 +48,8 @@
 
 				if (data.success && data.appointments) {
 					appointments = data.appointments;
+				} else if (data.appointmentsError) {
+					appointmentsError = true;
 				}
 			} catch (error) {
 				if (error instanceof Error) {
@@ -76,6 +80,11 @@
 			<div class="flex flex-col gap-2">
 				<Skeleton class="h-[20px] w-full rounded-lg" />
 				<Skeleton class="h-[20px] w-75 rounded-lg" />
+			</div>
+		{:else if appointmentsError}
+			<div class="flex h-40 flex-col items-center justify-center gap-2 text-muted-foreground">
+				<CircleAlert size={14} />
+				<p>There was an error loading appointments</p>
 			</div>
 		{:else}
 			<Calendar

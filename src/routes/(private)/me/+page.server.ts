@@ -5,7 +5,7 @@ import { fail } from '@sveltejs/kit';
 type Owner = Database['pets']['Tables']['owners']['Row'];
 
 export const load = (async ({ locals: { supabase, safeGetSession } }) => {
-	const { data: owner } = await supabase.from('owners').select('*').single();
+	const { data: owner } = await supabase.schema('pets').from('owners').select('*').single();
 
 	if (!owner) {
 		const { user } = await safeGetSession();

@@ -7,14 +7,16 @@
 
 	import Images from '@lucide/svelte/icons/images';
 	import Camera from '@lucide/svelte/icons/camera';
+	import CircleAlert from '@lucide/svelte/icons/circle-alert';
 
 	let photoUrls: string[] = $state([]);
 	let photosLoading: boolean = $state(true);
+	let photosError: boolean = $state(false);
 
 	type photosResponse = {
 		success: boolean;
 		photos: { photo: number[]; mimeType: string }[] | null;
-		potdError: string | null;
+		photosError: string | null;
 	};
 
 	onMount(() => {
@@ -39,6 +41,8 @@
 
 						return URL.createObjectURL(blob);
 					});
+				} else if (data.photosError) {
+					photosError = true;
 				}
 			} catch (error) {
 				if (error instanceof Error) {
@@ -78,6 +82,11 @@
 			<div class="flex flex-col gap-2">
 				<Skeleton class="h-[20px] w-full rounded-lg" />
 				<Skeleton class="h-[20px] w-75 rounded-lg" />
+			</div>
+		{:else if photosError}
+			<div class="flex h-40 flex-col items-center justify-center gap-2 text-muted-foreground">
+				<CircleAlert size={14} />
+				<p>There was an error loading recent photos</p>
 			</div>
 		{:else if photoUrls.length == 0}
 			<div class="flex h-40 flex-col items-center justify-center gap-2 text-muted-foreground">

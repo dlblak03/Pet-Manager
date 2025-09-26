@@ -2,10 +2,10 @@ import { redirect } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 
 export const GET: RequestHandler = async ({ locals: { supabase } }) => {
-	const { error } = await supabase.auth.signOut();
+	const { error: signOutError } = await supabase.auth.signOut({ scope: 'global' });
 
-	if (error) {
-		console.error(error);
+	if (signOutError) {
+		console.error(signOutError);
 	}
 
 	redirect(303, '/sign-in');

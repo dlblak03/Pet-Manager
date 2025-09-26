@@ -6,9 +6,11 @@
 	import { Separator } from '$lib/components/ui/separator';
 
 	import Camera from '@lucide/svelte/icons/camera';
+	import CircleAlert from '@lucide/svelte/icons/circle-alert';
 
 	let potdUrl: any = $state('');
 	let potdLoading: boolean = $state(true);
+	let potdError: boolean = $state(false);
 
 	type potdResponse = {
 		success: boolean;
@@ -37,6 +39,8 @@
 					const blob = new Blob([uint8Array], { type: data.mimeType });
 
 					potdUrl = URL.createObjectURL(blob);
+				} else if (data.potdError) {
+					potdError = true;
 				}
 			} catch (error) {
 				if (error instanceof Error) {
@@ -75,6 +79,11 @@
 			<div class="flex flex-col gap-2">
 				<Skeleton class="h-[20px] w-full rounded-lg" />
 				<Skeleton class="h-[20px] w-75 rounded-lg" />
+			</div>
+		{:else if potdError}
+			<div class="flex h-40 flex-col items-center justify-center gap-2 text-muted-foreground">
+				<CircleAlert size={14} />
+				<p>There was an error loading a photo of the day</p>
 			</div>
 		{:else if potdUrl == ''}
 			<div class="flex h-40 flex-col items-center justify-center gap-2 text-muted-foreground">

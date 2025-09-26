@@ -10,10 +10,10 @@ export const GET: RequestHandler = async ({ locals: { supabase } }) => {
 		.from('picture_of_the_day')
 		.select(`*, pet_media(*)`)
 		.eq('date', new Date().toISOString().split('T')[0])
-		.single();
+		.limit(1);
 
 	if (potdError) {
-		console.error('Picture of the day fetch error: ' + potdError);
+		console.error('Picture of the day fetch error: ' + potdError.message);
 		return new Response(
 			JSON.stringify({
 				success: false,
@@ -23,9 +23,9 @@ export const GET: RequestHandler = async ({ locals: { supabase } }) => {
 			})
 		);
 	}
-
-	if (potd) {
-		const image: POTD & { pet_media: Media | null } = potd;
+	
+	if (potd && potd.length != 0) {
+		const image: POTD & { pet_media: Media | null } = potd[0];
 
 		const { data: potdFile, error: potdFileError } = await supabase.storage
 			.from('private')
