@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { LayoutProps } from './$types';
+	import { invalidate } from '$app/navigation';
 
 	import { toggleMode } from 'mode-watcher';
 
@@ -19,7 +20,7 @@
 	import HeartPulse from '@lucide/svelte/icons/heart-pulse';
 	import LogOut from '@lucide/svelte/icons/log-out';
 	import AddPet from '$lib/blocks/layout/add-pet.svelte';
-	import { invalidate } from '$app/navigation';
+
 	import AddAppointment from '$lib/blocks/layout/add-appointment.svelte';
 
 	let { data, children }: LayoutProps = $props();
@@ -154,34 +155,34 @@
 			class="flex h-[37px] shrink-0 items-center gap-2 border-b transition-[width,height] ease-linear"
 		>
 			<div class="flex w-full items-center gap-1 px-2 lg:gap-2 lg:px-2">
-				{#if headerTitle == 'My Account'}
+				{#if pathName == 'me'}
 					<a
 						href={'/mypets'}
+						aria-label="View my pets"
 						class="inline-flex size-9 shrink-0 items-center justify-center gap-2 rounded-md border bg-background text-sm font-medium whitespace-nowrap shadow-xs transition-all outline-none hover:bg-accent hover:text-accent-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:border-input dark:bg-input/30 dark:hover:bg-input/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"
 					>
 						<span> 🐶 </span>
-						<span class="sr-only">Toggle my pets menu</span>
 					</a>
 				{/if}
 				<a
-					href={headerTitle == 'Dashboard' ? '/mypets' : '/dashboard'}
+					href={pathName == 'dashboard' ? '/mypets' : '/dashboard'}
+					aria-label={pathName == 'dashboard' ? 'View my pets' : 'View dashboard'}
 					class="inline-flex size-9 shrink-0 items-center justify-center gap-2 rounded-md border bg-background text-sm font-medium whitespace-nowrap shadow-xs transition-all outline-none hover:bg-accent hover:text-accent-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:border-input dark:bg-input/30 dark:hover:bg-input/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"
 				>
 					<span
-						class={headerTitle == 'Dashboard'
+						class={pathName == 'dashboard'
 							? 'scale-100 rotate-0 !transition-all duration-300'
 							: 'scale-0 -rotate-90 duration-300'}
 					>
 						🐶
 					</span>
 					<span
-						class={headerTitle == 'Dashboard'
+						class={pathName == 'dashboard'
 							? 'absolute scale-0 rotate-90 !transition-all duration-300'
 							: 'absolute scale-100 rotate-0 duration-300'}
 					>
 						<X />
 					</span>
-					<span class="sr-only">Toggle my pets menu</span>
 				</a>
 				<Separator
 					orientation="vertical"
@@ -189,10 +190,10 @@
 					class="mx-2 data-[orientation=vertical]:h-6"
 				/>
 				<h1 class="flex items-center gap-2 text-base font-medium">
-					{#if headerTitle == 'My Pets'}
+					{#if pathName == 'mypets'}
 						<PawPrint size={12} />
 					{/if}
-					{#if headerTitle == 'My Account'}
+					{#if pathName == 'me'}
 						<User size={12} />
 					{/if}
 					{headerTitle}
@@ -204,10 +205,10 @@
 								<Button
 									class="cursor-pointer border border-green-600/50 bg-green-500/50 text-card-foreground hover:bg-green-600/50 focus-visible:border-green-600/50 focus-visible:ring-green-600/50 dark:bg-green-400/25 dark:hover:bg-green-600/50"
 									{...props}
+									aria-label="Add new menu"
 								>
 									<PlusIcon />
 									New
-									<span class="sr-only">New item</span>
 								</Button>
 							{/snippet}
 						</DropdownMenu.Trigger>
@@ -264,20 +265,19 @@
 						class="mx-2 data-[orientation=vertical]:h-6"
 					/>
 
-					<Button onclick={toggleMode} class="cursor-pointer" variant="outline" size="icon">
+					<Button onclick={toggleMode} aria-label="Toggle theme" class="cursor-pointer" variant="outline" size="icon">
 						<SunIcon
 							class="h-[1.2rem] w-[1.2rem] scale-100 rotate-0 !transition-all dark:scale-0 dark:-rotate-90"
 						/>
 						<MoonIcon
 							class="absolute h-[1.2rem] w-[1.2rem] scale-0 rotate-90 !transition-all dark:scale-100 dark:rotate-0"
 						/>
-						<span class="sr-only">Toggle theme</span>
 					</Button>
 
 					<DropdownMenu.Root>
 						<DropdownMenu.Trigger>
 							{#snippet child({ props })}
-								<Button class="cursor-pointer" {...props} variant="outline" size="icon">
+								<Button class="cursor-pointer" aria-label="View my account" {...props} variant="outline" size="icon">
 									<User />
 								</Button>
 							{/snippet}
@@ -293,9 +293,6 @@
 							<DropdownMenu.Separator />
 							<DropdownMenu.Item
 								class="p-0"
-								onSelect={() => {
-									window.location.href = '/sign-out';
-								}}
 							>
 								<a
 									href="/sign-out"
@@ -316,7 +313,7 @@
 </div>
 
 <Sheet.Root bind:open={addSheet}>
-	<Sheet.Content side="right" class={'min-w-[350px] gap-0 [&>button:last-child]:hidden'}>
+	<Sheet.Content side="right" class={'min-w-[300px] gap-0 [&>button:last-child]:hidden'}>
 		<Sheet.Header>
 			<Sheet.Title class="flex items-center gap-2">
 				{#if addPetSheet}

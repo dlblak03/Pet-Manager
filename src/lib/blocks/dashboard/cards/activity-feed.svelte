@@ -5,6 +5,11 @@
 	import type { Database } from '$lib/database/database.types';
 
 	type Activity = Database['pets']['Tables']['activity_feed']['Row'];
+	type Pet = Database['pets']['Tables']['pets']['Row'];
+	type Appointment = Database['pets']['Tables']['appointments']['Row'];
+	type MedicalRecord = Database['pets']['Tables']['medical_records']['Row'];
+	type Vaccination = Database['pets']['Tables']['pet_vaccinations']['Row'];
+	type Feed = Activity & { pets: Pet | null, appointments: Appointment | null, medical_records: MedicalRecord | null, pet_vaccinations: Vaccination | null };
 
 	import * as Card from '$lib/components/ui/card/index.js';
 	import { Skeleton } from '$lib/components/ui/skeleton/index.js';
@@ -18,20 +23,58 @@
 	import ChevronDown from '@lucide/svelte/icons/chevron-down';
 	import ChevronUp from '@lucide/svelte/icons/chevron-up';
 	import Plus from '@lucide/svelte/icons/plus';
+	import CircleAlert from '@lucide/svelte/icons/circle-alert';
 
-	let activityFeedData: Activity[] = $state([]);
+	let activityFeedData: Feed[] = $state([]);
 	let activityFeedLoading: boolean = $state(true);
+	let activityFeedError: boolean = $state(false);
 	let showMore: boolean = $state(false);
 
 	let value = today(getLocalTimeZone());
 	let yesterday = today(getLocalTimeZone()).subtract({ days: 1 });
 
-	onMount(async () => {
-		try {
-			activityFeedData = await fetch('/api/dashboard/activity-feed').then((r) => r.json());
-		} finally {
-			activityFeedLoading = false;
+	type activityFeedResponse = {
+		success: boolean;
+		activityFeed: Feed[] | null;
+		activityFeedError: string | null;
+	};
+
+	onMount(() => {
+		const controller = new AbortController();
+
+		async function fetchActivityFeed() {
+			try {
+				const response = await fetch('/api/dashboard/activity-feed', {
+					signal: controller.signal
+				});
+
+				if (!response.ok) {
+					throw new Error(`HTTP error. Status: ${response.status}`);
+				}
+
+				const data: activityFeedResponse = await response.json();
+
+				if (data.success && data.activityFeed) {
+					activityFeedData = data.activityFeed;
+				} else if (data.activityFeedError) {
+					activityFeedError = true;
+				}
+			} catch (error) {
+				if (error instanceof Error) {
+					if (error.name !== 'AbortError') {
+						console.error('Failed to fetch activity feed: ', error);
+					}
+				} else {
+					console.error('An unexpected error occurred: ', error);
+				}
+			} finally {
+				activityFeedLoading = false;
+			}
 		}
+
+		fetchActivityFeed();
+
+		return () => controller.abort();
 	});
 </script>
 
@@ -45,6 +88,11 @@
 			<div class="flex flex-col gap-2">
 				<Skeleton class="h-[20px] w-full rounded-lg" />
 				<Skeleton class="h-[20px] w-75 rounded-lg" />
+			</div>
+		{:else if activityFeedError}
+			<div class="flex h-40 flex-col items-center justify-center gap-2 text-muted-foreground">
+				<CircleAlert size={14} />
+				<p>There was an error loading activity feed</p>
 			</div>
 		{:else if activityFeedData.length == 0}
 			<div class="flex h-20 flex-col items-center justify-center gap-2 text-muted-foreground">
@@ -93,22 +141,15 @@
 					<!-- main text -->
 					<div class="flex flex-col gap-1">
 						{#if activity.activity_type == 'pet_added'}
-							<p class="text-base font-medium">{activity.activity_description} 🎉</p>
+							<p class="text-base font-medium">{activity.pets?.name} has joined the family 🎉</p>
 							<p class="text-sm text-muted-foreground">
-								New {activity.pet_species}
-								{activity.pet_breed ? '(' + activity.pet_breed + ')' : ''} added
+								New {activity.pets?.species}
+								{activity.pets?.breed ? '(' + activity.pets?.breed + ')' : ''} added
 							</p>
-						{/if}
-						{#if activity.activity_type == 'pet_deleted'}
-							<p class="text-base font-medium">{activity.activity_description} ☹️</p>
-							<p class="text-sm text-muted-foreground">All data has been deleted</p>
 						{/if}
 						{#if activity.activity_type == 'appointment_added'}
 							<p class="text-base font-medium">
-								New Appointment {activity.appointment_type == 'Check Up' ? '🩺' : ''}
-							</p>
-							<p class="text-sm text-muted-foreground">
-								{activity.activity_description.length > 0 ? activity.activity_description : ''}
+								New Appointment {activity.appointments?.appointment_type == 'Check Up' ? '🩺' : ''}
 							</p>
 						{/if}
 					</div>

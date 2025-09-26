@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { DateFormatter, type DateValue, getLocalTimeZone } from '@internationalized/date';
+	import { DateFormatter } from '@internationalized/date';
 
 	import { cn } from '$lib/utils.js';
 
@@ -29,7 +29,7 @@
 	];
 </script>
 
-<div class="flex w-full flex-col gap-1.5">
+<div class="flex w-full flex-col gap-2">
 	<Label for="name">Pet Name</Label>
 	<Input
 		autocomplete={'off'}
@@ -37,11 +37,10 @@
 		type="text"
 		id="petname"
 		name="petname"
-		placeholder=""
 	/>
 </div>
 
-<div class="flex w-full flex-col gap-1.5">
+<div class="flex w-full flex-col gap-2">
 	<Label for="species">Species</Label>
 	<Select.Root type="single" name="species" bind:value={petinput.species}>
 		<Select.Trigger id="species" class="w-full cursor-pointer bg-white">
@@ -60,7 +59,7 @@
 	</Select.Root>
 </div>
 
-<div class="flex w-full flex-col gap-1.5">
+<div class="flex w-full flex-col gap-2">
 	<Label for="breed">Breed</Label>
 	<Input
 		autocomplete={'off'}
@@ -72,7 +71,7 @@
 	/>
 </div>
 
-<div class="flex w-full flex-col gap-1.5">
+<div class="flex w-full flex-col gap-2">
 	<Label for="gender">Gender</Label>
 	<Select.Root type="single" name="gender" bind:value={petinput.gender}>
 		<Select.Trigger id="gender" class="w-full cursor-pointer bg-white">
@@ -91,7 +90,7 @@
 	</Select.Root>
 </div>
 
-<div class="flex w-full flex-col gap-1.5">
+<div class="flex w-full flex-col gap-2">
 	<Label for="birthday">Birth Day</Label>
 	<Popover.Root>
 		<Popover.Trigger
@@ -106,7 +105,7 @@
 		>
 			<CalendarIcon />
 			{petinput.birthDate
-				? df.format(petinput.birthDate.toDate(getLocalTimeZone()))
+				? df.format(petinput.birthDate.toDate('UTC'))
 				: 'Pick a date'}
 		</Popover.Trigger>
 		<Popover.Content class="w-auto p-0">
@@ -115,7 +114,7 @@
 	</Popover.Root>
 </div>
 
-<div class="flex w-full flex-col gap-1.5">
+<div class="flex w-full flex-col gap-2">
 	<Label for="color">Color</Label>
 	<Input
 		autocomplete={'off'}
@@ -127,7 +126,7 @@
 	/>
 </div>
 
-<div class="flex w-full flex-col gap-1.5">
+<div class="flex w-full flex-col gap-2">
 	<Label for="microchip">Microchip ID</Label>
 	<Input
 		autocomplete={'off'}
