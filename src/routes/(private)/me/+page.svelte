@@ -51,7 +51,10 @@
 
 <svelte:head>
 	<title>Pet Manager | Me</title>
-	<meta name="description" content="Update your Pet Manager account settings including name, email, language preferences, and timezone settings.">
+	<meta
+		name="description"
+		content="Update your Pet Manager account settings including name, email, language preferences, and timezone settings."
+	/>
 </svelte:head>
 
 <div class="flex grow flex-col items-center gap-10 px-10 py-10">

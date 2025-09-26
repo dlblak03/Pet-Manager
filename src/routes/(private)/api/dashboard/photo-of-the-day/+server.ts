@@ -23,7 +23,7 @@ export const GET: RequestHandler = async ({ locals: { supabase } }) => {
 			})
 		);
 	}
-	
+
 	if (potd && potd.length != 0) {
 		const image: POTD & { pet_media: Media | null } = potd[0];
 

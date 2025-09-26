@@ -5,21 +5,22 @@ import { fail } from '@sveltejs/kit';
 type Owner = Database['pets']['Tables']['owners']['Row'];
 
 export const load = (async ({ locals: { supabase, safeGetSession } }) => {
-	const { data: owner, error: ownerError } = await supabase.schema('pets').from('owners').select('*').limit(1);
+	const { data: owner, error: ownerError } = await supabase
+		.schema('pets')
+		.from('owners')
+		.select('*')
+		.limit(1);
 
 	if (owner && owner.length == 0) {
 		const { user } = await safeGetSession();
 
 		if (user) {
-			await supabase
-				.schema('pets')
-				.from('owners')
-				.insert({
-					owner_name: '',
-					owner_email: user.email,
-					language: 'en',
-					time_zone: 'UTC'
-				})
+			await supabase.schema('pets').from('owners').insert({
+				owner_name: '',
+				owner_email: user.email,
+				language: 'en',
+				time_zone: 'UTC'
+			});
 
 			return {
 				success: true,
@@ -38,7 +39,7 @@ export const load = (async ({ locals: { supabase, safeGetSession } }) => {
 			owner_email: '',
 			language: '',
 			time_zone: ''
-		}
+		};
 	}
 
 	return {
@@ -60,7 +61,7 @@ export const actions: Actions = {
 		if (email.trim().length == 0) {
 			return fail(401, {
 				emailRequired: true
-			})
+			});
 		}
 
 		const { user } = await safeGetSession();
