@@ -13,13 +13,13 @@ export const GET: RequestHandler = async ({ url, locals: { supabase, safeGetSess
 		if (!verifyError) {
 			cookies.delete('email', { path: '/' });
 
-			const { data: owner, error: ownerError } = await supabase.schema('pets').from('owners').select('*').single();
+			const { data: owner, error: ownerError } = await supabase.schema('pets').from('owners').select('*').limit(1);
 
 			if (ownerError) {
 				console.error('Auth owner select error: ' + ownerError)
 			}
 
-			if (!owner) {
+			if (owner && owner.length == 0) {
 				if (user) {
 					await supabase
 						.schema('pets')
@@ -27,8 +27,8 @@ export const GET: RequestHandler = async ({ url, locals: { supabase, safeGetSess
 						.insert({
 							owner_name: '',
 							owner_email: user.email,
-							language: null,
-							time_zone: null
+							language: 'UTC',
+							time_zone: 'en'
 						})
 				}
 			}
