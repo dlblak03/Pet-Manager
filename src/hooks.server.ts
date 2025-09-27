@@ -120,7 +120,7 @@ const securityHeaders: Handle = async ({ event, resolve }) => {
 const cacheHeaders: Handle = async ({ event, resolve }) => {
 	const response = await resolve(event);
 
-	if (event.route.id?.startsWith('/(protected)')) {
+	if (event.route.id?.startsWith('/(auth)')) {
 		Object.entries({
 			'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
 			Pragma: 'no-cache',
@@ -131,7 +131,7 @@ const cacheHeaders: Handle = async ({ event, resolve }) => {
 		});
 	}
 
-	if (event.route.id?.startsWith('/(public)')) {
+	if (event.route.id?.startsWith('/(private)')) {
 		Object.entries({
 			'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
 			Pragma: 'no-cache',
