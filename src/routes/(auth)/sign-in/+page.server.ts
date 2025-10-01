@@ -2,7 +2,7 @@ import { redirect } from '@sveltejs/kit';
 import type { Actions } from './$types';
 
 export const actions: Actions = {
-	signin: async ({ request, locals: { supabase }, cookies }) => {
+	signin: async ({ request, locals: { supabase, tracker }, cookies }) => {
 		const formData = await request.formData();
 
 		const email = formData.get('email') as string;
@@ -20,6 +20,14 @@ export const actions: Actions = {
 			return redirect(303, '/error');
 		} else {
 			cookies.set('email', email, {
+				sameSite: true,
+				secure: true,
+				httpOnly: true,
+				path: '/',
+				maxAge: 60 * 60 * 1000
+			});
+
+			cookies.set('session-id', await tracker.trackSession('pre-authentication', email), {
 				sameSite: true,
 				secure: true,
 				httpOnly: true,

@@ -5,7 +5,7 @@ import type { RequestHandler } from './$types';
 
 export const GET: RequestHandler = async ({
 	url,
-	locals: { supabase, safeGetSession },
+	locals: { supabase, safeGetSession, tracker },
 	cookies
 }) => {
 	const token_hash = url.searchParams.get('token_hash');
@@ -41,6 +41,16 @@ export const GET: RequestHandler = async ({
 				}
 			}
 
+			const oldSessionId = cookies.get('session-id')
+			await tracker.untrackSession(oldSessionId || '-1');
+			cookies.set('session-id', await tracker.trackSession('authenticated', user!.email || '', oldSessionId), {
+				sameSite: true,
+				secure: true,
+				httpOnly: true,
+				path: '/',
+				maxAge: 60 * 60 * 1000
+			});
+			
 			return redirect(303, '/dashboard');
 		}
 

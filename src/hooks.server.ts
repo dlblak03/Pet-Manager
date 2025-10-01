@@ -2,6 +2,7 @@ import { type Handle, redirect } from '@sveltejs/kit';
 import { sequence } from '@sveltejs/kit/hooks';
 import { env } from '$env/dynamic/private';
 import { createServerClient } from '@supabase/ssr';
+import { createLogTrackerClient } from 'logtracker.js';
 import type { CookieSerializeOptions } from 'cookie';
 
 const passwordProtectSite: Handle = async ({ event, resolve }) => {
@@ -78,6 +79,16 @@ const supabase: Handle = async ({ event, resolve }) => {
 	});
 };
 
+const tracker: Handle = async ({ event, resolve }) => {
+	event.locals.tracker = createLogTrackerClient({
+		url: env.PRIVATE_TRACKER_URL,
+		application_id: env.PRIVATE_TRACKER_APPLICATION_ID,
+		public_key: env.PRIVATE_TRACKER_PUBLIC_KEY
+	});
+
+	return resolve(event);
+}
+
 const rootRedirect: Handle = async ({ event, resolve }) => {
 	if (event.url.pathname === '/') {
 		throw redirect(302, '/sign-in');
@@ -148,6 +159,7 @@ const cacheHeaders: Handle = async ({ event, resolve }) => {
 export const handle: Handle = sequence(
 	passwordProtectSite,
 	supabase,
+	tracker,
 	rootRedirect,
 	authGuard,
 	securityHeaders,
